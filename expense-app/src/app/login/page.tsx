@@ -67,6 +67,16 @@ export default function LoginPage() {
       <div className="absolute bottom-20 left-12 w-14 h-14 bg-white/10 border-2 border-black rounded-2xl floating-shape-delayed-2"></div>
       <div className="absolute bottom-10 right-14 w-10 h-10 bg-black/10 border-2 border-white rounded-lg floating-shape"></div>
 
+      {/* Back to Home Button */}
+      <div className="absolute top-6 left-6">
+        <Link
+          href="/"
+          className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-white dark:bg-[#1c1c1e] border-3 border-black text-[#111111] dark:text-white hover:bg-[#fafafa] transition cursor-pointer shadow-[3px_3px_0px_#000] text-[10px] font-black uppercase tracking-widest group"
+        >
+          <span className="transition-transform group-hover:-translate-x-1">←</span> Home
+        </Link>
+      </div>
+
       {/* Theme Switcher in the corner */}
       <div className="absolute top-6 right-6">
         <button
