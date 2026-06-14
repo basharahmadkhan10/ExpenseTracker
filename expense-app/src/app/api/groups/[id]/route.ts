@@ -2,6 +2,10 @@ import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/db';
 import { getSessionUser } from '@/lib/auth';
 
+/**
+ * Retrieves a specific group along with its active memberships and user details.
+ * Requires authentication and group membership verification.
+ */
 export async function GET(
   request: Request,
   { params }: { params: Promise<{ id: string }> }
