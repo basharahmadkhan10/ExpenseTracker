@@ -1,36 +1,64 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Flatmate Expense Tracker & Reconciliation App
 
-## Getting Started
+A robust Next.js application built with TypeScript, Prisma, SQLite, and Tailwind CSS. The app simplifies flatmate expense sharing by parsing historical records, enforcing time-travel membership constraints, and resolving messy spreadsheet data anomalies.
 
-First, run the development server:
+## Features
 
+1. **Authentication:** JWT-based session security via HTTP-only cookies.
+2. **Time-Travel Memberships:** Manage join/leave dates for group members. Balance splits automatically exclude members on dates they were inactive (e.g. Meera in April, Sam in March).
+3. **Traceable CSV Importer:** Ingests CSV spreadsheet records. Clean records are imported immediately, while anomalies are parked in a DB-backed review queue.
+4. **Meera's Anomaly Review Screen:** View flagged anomalies (duplicates, typos, conflicts) and resolve them inline (Approve with corrections or Reject/Discard).
+5. **Rohan's Explain Balance Drill-down:** Click any net balance to see the exact split equations and transfers composing it (no magic numbers).
+6. **Priya's Exchange Rate Transparency:** Auditable exchange rate annotations next to USD trip bookings.
+7. **Timeline View:** Recharts running balance visualization tracking member accounts over time.
+8. **Reconciliation:** Simplified debt payouts (who pays whom, how much).
+9. **Manual CRUD:** Create expenses (equal/custom splits) and settle transfers.
+
+---
+
+## Local Setup & Quickstart
+
+### 1. Install Dependencies
+Run from the `expense-app` directory:
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+npm install
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### 2. Configure Database & Seed Default Users
+Initialize the local SQLite database and populate initial members (Aisha, Rohan, Priya, Meera, Sam, Dev) with their correct join and departure date boundaries:
+```bash
+# Push Prisma schema to SQLite dev.db
+npx prisma db push
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+# Seed the database
+npx tsx prisma/seed.ts
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+### 3. Start Development Server
+```bash
+npm run dev
+```
+Open [http://localhost:3000](http://localhost:3000) in your browser.
 
-## Learn More
+---
 
-To learn more about Next.js, take a look at the following resources:
+## Evaluation Workflow Walkthrough
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+1. **Sign In:** Use a seeded user (e.g., `Aisha` with password `password123`).
+2. **Select Group:** The dashboard displays the default seeded group **"Flatmates"**.
+3. **Inspect Initial State:** Check the *Manage Members* tab. Notice Meera is marked as left on March 31st, and Sam joined April 15th.
+4. **Import Spreadsheet:** 
+   - Click the *Expenses List* tab.
+   - Select `Expenses Export.csv` located in the project root.
+   - Click **Upload & Parse**.
+   - Notice the *Live CSV Import Report* rendering row-by-row status. Clean items (rent, groceries) are imported directly, while USD amounts are auto-converted at `83.4` rate.
+5. **Review Anomalies:**
+   - Click the *Anomalies review* tab (representing Meera's screen).
+   - Resolve **Row 11** (typo `"Priya S"`): Click **Approve/Resolve**, change `"Priya S"` to `"Priya"` in the paid_by input, and click **Approve & Insert**.
+   - Resolve **Row 6** (duplicate swiggySwiggy swat swish Swiggy swap Marina Bites swiggy): Click **Reject** to discard it.
+   - Resolve date conflicts and percentage mismatches.
+6. **Verify Balance Calculations:**
+   - Under the *Balances Summary* tab, view the net balances table and Aisha's simplified payments list.
+   - Click **Explain Balance** next to Rohan. You will see a detailed breakdown of splits (Rohan's request). Notice the USD conversion annotations (Priya's request).
+   - Toggle the *Date Filter* (e.g. from `2026-04-15` onwards) to verify Sam's balance behaves correctly, excluding pre-April utilities.
+   - Review the *Balance Timeline View* chart showing inflection points at Meera's departure and Sam's arrival.
