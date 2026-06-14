@@ -14,8 +14,7 @@ model User {
   passwordHash  String
   createdAt     DateTime       @default(now())
   
-  // Relations
-  memberships   GroupMember[]
+    memberships   GroupMember[]
   paidExpenses  Expense[]      @relation("Payer")
   splits        ExpenseSplit[]
   sentSettlements     Settlement[] @relation("SettlementPayer")
@@ -27,8 +26,7 @@ model Group {
   name        String
   createdAt   DateTime      @default(now())
   
-  // Relations
-  members     GroupMember[]
+    members     GroupMember[]
   expenses    Expense[]
   settlements Settlement[]
   sessions    ImportSession[]
@@ -42,8 +40,7 @@ model GroupMember {
   leftAt    DateTime?
   createdAt DateTime  @default(now())
 
-  // Relations
-  group     Group     @relation(fields: [groupId], references: [id], onDelete: Cascade)
+    group     Group     @relation(fields: [groupId], references: [id], onDelete: Cascade)
   user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([groupId, userId])
@@ -62,8 +59,7 @@ model Expense {
   splitType       String
   createdAt       DateTime       @default(now())
 
-  // Relations
-  group           Group          @relation(fields: [groupId], references: [id], onDelete: Cascade)
+    group           Group          @relation(fields: [groupId], references: [id], onDelete: Cascade)
   payer           User           @relation("Payer", fields: [payerId], references: [id], onDelete: Cascade)
   splits          ExpenseSplit[]
 }
@@ -75,8 +71,7 @@ model ExpenseSplit {
   amount    Float
   createdAt DateTime @default(now())
 
-  // Relations
-  expense   Expense  @relation(fields: [expenseId], references: [id], onDelete: Cascade)
+    expense   Expense  @relation(fields: [expenseId], references: [id], onDelete: Cascade)
   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([expenseId, userId])
@@ -91,8 +86,7 @@ model Settlement {
   date        DateTime
   createdAt   DateTime @default(now())
 
-  // Relations
-  group       Group    @relation(fields: [groupId], references: [id], onDelete: Cascade)
+    group       Group    @relation(fields: [groupId], references: [id], onDelete: Cascade)
   payer       User     @relation("SettlementPayer", fields: [payerId], references: [id], onDelete: Cascade)
   receiver    User     @relation("SettlementReceiver", fields: [receiverId], references: [id], onDelete: Cascade)
 }
@@ -104,8 +98,7 @@ model ImportSession {
   uploadedAt DateTime        @default(now())
   status     String          @default("PENDING")
   
-  // Relations
-  group      Group           @relation(fields: [groupId], references: [id], onDelete: Cascade)
+    group      Group           @relation(fields: [groupId], references: [id], onDelete: Cascade)
   anomalies  ImportAnomaly[]
 }
 
@@ -119,6 +112,5 @@ model ImportAnomaly {
   status       String        @default("PENDING")
   createdAt    DateTime      @default(now())
 
-  // Relations
-  session      ImportSession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+    session      ImportSession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
 }
