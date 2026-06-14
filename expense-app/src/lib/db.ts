@@ -2,10 +2,7 @@ import { PrismaClient } from '@prisma/client';
 
 const globalForPrisma = global as unknown as { prisma: PrismaClient };
 
-/**
- * Prisma Client singleton to prevent multiple connections 
- * exhausting the database pool during development hot-reloading.
- */
+
 export const prisma =
   globalForPrisma.prisma ||
   new PrismaClient({
