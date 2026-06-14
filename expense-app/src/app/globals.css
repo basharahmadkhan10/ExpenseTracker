@@ -35,19 +35,19 @@ body.light-theme {
 html.dark,
 body.dark-theme {
   --bg-page: #0d0d0f;
-  --bg-card: #161618;
-  --text-color: #f2f2f2;
-  --text-muted: #cccccc;
-  --text-subtle: #aaaaaa;
-  --border-color: rgba(255, 255, 255, 0.85);
-  --shadow-color: rgba(255, 255, 255, 0.3);
-  --input-bg: #1e1e22;
-  --grid-line-color: rgba(180, 200, 255, 0.04);
-  --dots-color: rgba(180, 200, 255, 0.06);
+  --bg-card: #151517;
+  --text-color: #f0f0f0;
+  --text-muted: #c8c8c8;
+  --text-subtle: #a0a0a0;
+  --border-color: rgba(255, 255, 255, 0.12);
+  --shadow-color: rgba(0, 0, 0, 0.8);
+  --input-bg: #1b1b1d;
+  --grid-line-color: rgba(255, 255, 255, 0.03);
+  --dots-color: rgba(255, 255, 255, 0.04);
   --header-bg: #101012;
-  --header-text: #f2f2f2;
-  --table-head-bg: #1a1a1e;
-  --table-row-hover: #1e1e24;
+  --header-text: #f0f0f0;
+  --table-head-bg: #191919;
+  --table-row-hover: #1c1c1e;
   --accent-red: #fc8181;
   --accent-green: #68d391;
 }
@@ -66,10 +66,7 @@ body {
 
 html.dark body.dark-theme {
   background-color: #0d0d0f;
-  background-image:
-    radial-gradient(ellipse at 15% 10%, rgba(60, 80, 160, 0.10) 0%, transparent 45%),
-    radial-gradient(ellipse at 85% 85%, rgba(80, 50, 160, 0.07) 0%, transparent 45%),
-    linear-gradient(175deg, #0f0f12 0%, #0d0d0f 50%, #111116 100%);
+  background-image: linear-gradient(180deg, #0d0d0f 0%, #0f0f11 60%, #0d0d0f 100%);
 }
 
 
@@ -90,10 +87,7 @@ html.dark body.dark-theme {
 html.dark .bg-dots-grid,
 html.dark .bg-futuristic-grid {
   background-color: #0d0d0f;
-  background-image:
-    radial-gradient(ellipse at 15% 10%, rgba(60, 80, 160, 0.10) 0%, transparent 45%),
-    radial-gradient(ellipse at 85% 85%, rgba(80, 50, 160, 0.07) 0%, transparent 45%),
-    linear-gradient(175deg, #0f0f12 0%, #0d0d0f 50%, #111116 100%);
+  background-image: linear-gradient(180deg, #0d0d0f 0%, #0f0f11 60%, #0d0d0f 100%);
   background-size: auto;
 }
 
