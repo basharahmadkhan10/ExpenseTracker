@@ -2,10 +2,7 @@ import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/db';
 import { getSessionUser } from '@/lib/auth';
 
-export async function GET(
-  request: Request,
-  { params }: { params: Promise<{ id: string }> }
-) {
+export async function GET(request: Request, { params }: { params: Promise<{ id: string }> }) {
   try {
     const user = await getSessionUser();
     if (!user) {
@@ -54,15 +51,17 @@ export async function GET(
       },
     });
 
-    const memberDetails = members.map(m => ({
+    const memberDetails = members.map((m) => ({
       id: m.user.id,
       name: m.user.name,
       joinedAt: m.joinedAt,
       leftAt: m.leftAt,
     }));
 
-    const balances: { [userId: string]: { paid: number; owed: number; net: number; name: string } } = {};
-    memberDetails.forEach(m => {
+    const balances: {
+      [userId: string]: { paid: number; owed: number; net: number; name: string };
+    } = {};
+    memberDetails.forEach((m) => {
       balances[m.id] = { name: m.name, paid: 0, owed: 0, net: 0 };
     });
 
@@ -77,7 +76,7 @@ export async function GET(
         convertedAmount: true,
       },
     });
-    paidRecords.forEach(rec => {
+    paidRecords.forEach((rec) => {
       if (balances[rec.payerId]) {
         balances[rec.payerId].paid += rec.convertedAmount;
       }
@@ -96,7 +95,7 @@ export async function GET(
         amount: true,
       },
     });
-    owedRecords.forEach(rec => {
+    owedRecords.forEach((rec) => {
       if (balances[rec.userId]) {
         balances[rec.userId].owed += rec.amount;
       }
@@ -114,7 +113,7 @@ export async function GET(
         amount: true,
       },
     });
-    settlements.forEach(set => {
+    settlements.forEach((set) => {
       if (balances[set.payerId]) {
         balances[set.payerId].paid += set.amount;
       }
@@ -124,7 +123,7 @@ export async function GET(
     });
 
     // 4. Calculate Net balances
-    const summary = Object.keys(balances).map(userId => {
+    const summary = Object.keys(balances).map((userId) => {
       const bal = balances[userId];
       const net = bal.paid - bal.owed;
       return {
@@ -140,7 +139,7 @@ export async function GET(
     const payersList: { name: string; id: string; amount: number }[] = [];
     const receiversList: { name: string; id: string; amount: number }[] = [];
 
-    summary.forEach(s => {
+    summary.forEach((s) => {
       if (s.netBalance < -0.01) {
         payersList.push({ id: s.userId, name: s.name, amount: -s.netBalance });
       } else if (s.netBalance > 0.01) {
@@ -151,7 +150,13 @@ export async function GET(
     payersList.sort((a, b) => b.amount - a.amount);
     receiversList.sort((a, b) => b.amount - a.amount);
 
-    const transactions: { from: string; fromId: string; to: string; toId: string; amount: number }[] = [];
+    const transactions: {
+      from: string;
+      fromId: string;
+      to: string;
+      toId: string;
+      amount: number;
+    }[] = [];
     let pIdx = 0;
     let rIdx = 0;
 
@@ -176,10 +181,13 @@ export async function GET(
       if (receiversList[rIdx].amount < 0.01) rIdx++;
     }
 
-    return NextResponse.json({
-      balances: summary,
-      reconciliation: transactions,
-    }, { status: 200 });
+    return NextResponse.json(
+      {
+        balances: summary,
+        reconciliation: transactions,
+      },
+      { status: 200 },
+    );
   } catch (error) {
     console.error('Fetch balances error:', error);
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 });

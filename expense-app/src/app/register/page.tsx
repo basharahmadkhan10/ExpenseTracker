@@ -38,8 +38,8 @@ export default function RegisterPage() {
     setError('');
 
     if (password !== confirmPassword) {
-      setError("Passwords do not match");
-      toast.warn("Passwords do not match!");
+      setError('Passwords do not match');
+      toast.warn('Passwords do not match!');
       return;
     }
 
@@ -87,13 +87,12 @@ export default function RegisterPage() {
       </div>
 
       <div className="w-full max-w-md neobrutal-card-white p-8 space-y-6 relative z-10">
-        
         {/* Title Tagline */}
         <div className="text-center space-y-4">
           <div className="inline-block bg-white text-black border-2 border-black px-4 py-1.5 font-black text-[10px] uppercase tracking-widest shadow-[2px_2px_0px_#000] rounded-xl">
             📝 SIGN UP
           </div>
-          
+
           <div className="space-y-1">
             <h1 className="text-xl font-black tracking-widest text-[#111111] bg-[#f5bb1b] border-3 border-black py-2 px-5 shadow-[3px_3px_0px_#000] rounded-2xl inline-block uppercase">
               CREATE ACCOUNT
@@ -106,8 +105,8 @@ export default function RegisterPage() {
 
         {/* Tab Toggle like the mockup */}
         <div className="flex border-3 border-black rounded-xl overflow-hidden shadow-[2px_2px_0px_#000]">
-          <Link 
-            href="/login" 
+          <Link
+            href="/login"
             className="flex-1 text-center py-2.5 text-xs font-bold uppercase bg-white text-slate-500 hover:bg-slate-50 hover:text-black dark:bg-[#262626] dark:text-slate-400 dark:hover:bg-neutral-800 border-r-3 border-black transition"
           >
             SIGN IN
@@ -126,7 +125,9 @@ export default function RegisterPage() {
 
         <form onSubmit={handleRegister} className="space-y-4">
           <div className="space-y-2">
-            <label className="block text-[9px] font-black text-slate-500 dark:text-slate-400 uppercase tracking-widest">Username</label>
+            <label className="block text-[9px] font-black text-slate-500 dark:text-slate-400 uppercase tracking-widest">
+              Username
+            </label>
             <input
               type="text"
               required
@@ -138,7 +139,9 @@ export default function RegisterPage() {
           </div>
 
           <div className="space-y-2">
-            <label className="block text-[9px] font-black text-slate-500 dark:text-slate-400 uppercase tracking-widest">Password</label>
+            <label className="block text-[9px] font-black text-slate-500 dark:text-slate-400 uppercase tracking-widest">
+              Password
+            </label>
             <input
               type="password"
               required
@@ -150,7 +153,9 @@ export default function RegisterPage() {
           </div>
 
           <div className="space-y-2">
-            <label className="block text-[9px] font-black text-slate-500 dark:text-slate-400 uppercase tracking-widest">Confirm Password</label>
+            <label className="block text-[9px] font-black text-slate-500 dark:text-slate-400 uppercase tracking-widest">
+              Confirm Password
+            </label>
             <input
               type="password"
               required
@@ -172,7 +177,10 @@ export default function RegisterPage() {
 
         <div className="border-t-3 border-dashed border-black pt-5 text-center text-xs font-bold uppercase tracking-wider text-slate-500">
           Already registered?{' '}
-          <Link href="/login" className="text-black dark:text-white font-black underline hover:text-[#f5bb1b] ml-1">
+          <Link
+            href="/login"
+            className="text-black dark:text-white font-black underline hover:text-[#f5bb1b] ml-1"
+          >
             Sign In here
           </Link>
         </div>

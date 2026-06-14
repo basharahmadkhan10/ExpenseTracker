@@ -6,10 +6,7 @@ import { getSessionUser } from '@/lib/auth';
  * Retrieves a specific group along with its active memberships and user details.
  * Requires authentication and group membership verification.
  */
-export async function GET(
-  request: Request,
-  { params }: { params: Promise<{ id: string }> }
-) {
+export async function GET(request: Request, { params }: { params: Promise<{ id: string }> }) {
   try {
     const user = await getSessionUser();
     if (!user) {
@@ -61,14 +58,11 @@ export async function GET(
 
     return NextResponse.json(formattedGroup, { status: 200 });
   } catch (error) {
-        return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
+    return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
   }
 }
 
-export async function DELETE(
-  request: Request,
-  { params }: { params: Promise<{ id: string }> }
-) {
+export async function DELETE(request: Request, { params }: { params: Promise<{ id: string }> }) {
   try {
     const user = await getSessionUser();
     if (!user) {
@@ -94,6 +88,6 @@ export async function DELETE(
 
     return NextResponse.json({ success: true, message: 'Group deleted successfully' });
   } catch (error) {
-        return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
+    return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
   }
 }

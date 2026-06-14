@@ -1,11 +1,16 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/db';
 import { getSessionUser } from '@/lib/auth';
-import { findUserByName, parseCsvDate, EXCHANGE_RATE_USD_TO_INR, ParsedCsvRow } from '@/lib/importer';
+import {
+  findUserByName,
+  parseCsvDate,
+  EXCHANGE_RATE_USD_TO_INR,
+  ParsedCsvRow,
+} from '@/lib/importer';
 
 export async function POST(
   request: Request,
-  { params }: { params: Promise<{ id: string; anomalyId: string }> }
+  { params }: { params: Promise<{ id: string; anomalyId: string }> },
 ) {
   try {
     const user = await getSessionUser();
@@ -49,7 +54,10 @@ export async function POST(
     }
 
     if (action !== 'APPROVE') {
-      return NextResponse.json({ error: 'Invalid action. Must be APPROVE or REJECT' }, { status: 400 });
+      return NextResponse.json(
+        { error: 'Invalid action. Must be APPROVE or REJECT' },
+        { status: 400 },
+      );
     }
 
     // Resolve details: use resolved values or fall back to raw CSV values
@@ -82,22 +90,31 @@ export async function POST(
     const payerName = (finalRowData.paid_by || '').trim();
     const payerUser = await findUserByName(payerName);
     if (!payerUser) {
-      return NextResponse.json({ error: `Resolved payer "${payerName}" not found` }, { status: 400 });
+      return NextResponse.json(
+        { error: `Resolved payer "${payerName}" not found` },
+        { status: 400 },
+      );
     }
 
     const splitTypeStr = (finalRowData.split_type || '').trim().toLowerCase();
     const splitWithStr = (finalRowData.split_with || '').trim();
     const descriptionStr = (finalRowData.description || '').toLowerCase();
-    const isSettlement = 
-      splitTypeStr === '' && 
-      (splitWithStr.split(';').length === 1 && splitWithStr.length > 0) &&
-      (descriptionStr.includes('paid back') || descriptionStr.includes('settle') || descriptionStr.includes('deposit'));
+    const isSettlement =
+      splitTypeStr === '' &&
+      splitWithStr.split(';').length === 1 &&
+      splitWithStr.length > 0 &&
+      (descriptionStr.includes('paid back') ||
+        descriptionStr.includes('settle') ||
+        descriptionStr.includes('deposit'));
 
     if (isSettlement) {
       const receiverName = splitWithStr.trim();
       const receiverUser = await findUserByName(receiverName);
       if (!receiverUser) {
-        return NextResponse.json({ error: `Resolved receiver "${receiverName}" not found` }, { status: 400 });
+        return NextResponse.json(
+          { error: `Resolved receiver "${receiverName}" not found` },
+          { status: 400 },
+        );
       }
 
       await prisma.$transaction(async (tx) => {
@@ -117,15 +134,26 @@ export async function POST(
         });
       });
 
-      return NextResponse.json({ success: true, status: 'APPROVED', type: 'SETTLEMENT' }, { status: 200 });
+      return NextResponse.json(
+        { success: true, status: 'APPROVED', type: 'SETTLEMENT' },
+        { status: 200 },
+      );
     } else {
-      const splitNames = splitWithStr ? splitWithStr.split(';').map(n => n.trim()).filter(Boolean) : [];
+      const splitNames = splitWithStr
+        ? splitWithStr
+            .split(';')
+            .map((n) => n.trim())
+            .filter(Boolean)
+        : [];
       const splitUsers: { id: string; name: string }[] = [];
 
       for (const sName of splitNames) {
         const sUser = await findUserByName(sName);
         if (!sUser) {
-          return NextResponse.json({ error: `Resolved split member "${sName}" not found` }, { status: 400 });
+          return NextResponse.json(
+            { error: `Resolved split member "${sName}" not found` },
+            { status: 400 },
+          );
         }
         splitUsers.push({ id: sUser.id, name: sUser.name });
       }
@@ -139,11 +167,14 @@ export async function POST(
 
       if (splitTypeStr === 'equal' || !splitTypeStr) {
         const splitShare = convertedAmount / splitUsers.length;
-        splitUsers.forEach(u => {
+        splitUsers.forEach((u) => {
           parsedSplits.push({ userId: u.id, amount: splitShare });
         });
       } else if (splitTypeStr === 'unequal') {
-        const detailParts = splitDetailsStr.split(';').map(p => p.trim()).filter(Boolean);
+        const detailParts = splitDetailsStr
+          .split(';')
+          .map((p) => p.trim())
+          .filter(Boolean);
         let sum = 0;
         for (const part of detailParts) {
           const lastSpace = part.lastIndexOf(' ');
@@ -152,18 +183,27 @@ export async function POST(
           }
           const name = part.substring(0, lastSpace).trim();
           const val = parseFloat(part.substring(lastSpace + 1).trim());
-          const u = splitUsers.find(su => su.name.toLowerCase() === name.toLowerCase());
+          const u = splitUsers.find((su) => su.name.toLowerCase() === name.toLowerCase());
           if (!u) {
-            return NextResponse.json({ error: `User "${name}" in split details not in split list` }, { status: 400 });
+            return NextResponse.json(
+              { error: `User "${name}" in split details not in split list` },
+              { status: 400 },
+            );
           }
           parsedSplits.push({ userId: u.id, amount: val });
           sum += val;
         }
         if (Math.abs(sum - convertedAmount) > 0.05) {
-          return NextResponse.json({ error: `Splits sum (₹${sum}) does not match total amount (₹${convertedAmount})` }, { status: 400 });
+          return NextResponse.json(
+            { error: `Splits sum (₹${sum}) does not match total amount (₹${convertedAmount})` },
+            { status: 400 },
+          );
         }
       } else if (splitTypeStr === 'percentage') {
-        const detailParts = splitDetailsStr.split(';').map(p => p.trim()).filter(Boolean);
+        const detailParts = splitDetailsStr
+          .split(';')
+          .map((p) => p.trim())
+          .filter(Boolean);
         let sumPct = 0;
         for (const part of detailParts) {
           const lastSpace = part.lastIndexOf(' ');
@@ -171,20 +211,34 @@ export async function POST(
             return NextResponse.json({ error: `Invalid split detail: "${part}"` }, { status: 400 });
           }
           const name = part.substring(0, lastSpace).trim();
-          const pct = parseFloat(part.substring(lastSpace + 1).replace('%', '').trim());
-          const u = splitUsers.find(su => su.name.toLowerCase() === name.toLowerCase());
+          const pct = parseFloat(
+            part
+              .substring(lastSpace + 1)
+              .replace('%', '')
+              .trim(),
+          );
+          const u = splitUsers.find((su) => su.name.toLowerCase() === name.toLowerCase());
           if (!u) {
-            return NextResponse.json({ error: `User "${name}" in split details not in split list` }, { status: 400 });
+            return NextResponse.json(
+              { error: `User "${name}" in split details not in split list` },
+              { status: 400 },
+            );
           }
           const val = (pct / 100) * convertedAmount;
           parsedSplits.push({ userId: u.id, amount: val });
           sumPct += pct;
         }
         if (Math.abs(sumPct - 100) > 0.01) {
-          return NextResponse.json({ error: `Percentages sum (${sumPct}%) does not equal 100%` }, { status: 400 });
+          return NextResponse.json(
+            { error: `Percentages sum (${sumPct}%) does not equal 100%` },
+            { status: 400 },
+          );
         }
       } else if (splitTypeStr === 'share') {
-        const detailParts = splitDetailsStr.split(';').map(p => p.trim()).filter(Boolean);
+        const detailParts = splitDetailsStr
+          .split(';')
+          .map((p) => p.trim())
+          .filter(Boolean);
         let totalShares = 0;
         const sharesMap: { userId: string; shares: number }[] = [];
         for (const part of detailParts) {
@@ -194,18 +248,27 @@ export async function POST(
           }
           const name = part.substring(0, lastSpace).trim();
           const val = parseFloat(part.substring(lastSpace + 1).trim());
-          const u = splitUsers.find(su => su.name.toLowerCase() === name.toLowerCase());
+          const u = splitUsers.find((su) => su.name.toLowerCase() === name.toLowerCase());
           if (!u) {
-            return NextResponse.json({ error: `User "${name}" in split details not in split list` }, { status: 400 });
+            return NextResponse.json(
+              { error: `User "${name}" in split details not in split list` },
+              { status: 400 },
+            );
           }
           sharesMap.push({ userId: u.id, shares: val });
           totalShares += val;
         }
-        sharesMap.forEach(sm => {
-          parsedSplits.push({ userId: sm.userId, amount: (sm.shares / totalShares) * convertedAmount });
+        sharesMap.forEach((sm) => {
+          parsedSplits.push({
+            userId: sm.userId,
+            amount: (sm.shares / totalShares) * convertedAmount,
+          });
         });
       } else {
-        return NextResponse.json({ error: `Unsupported split type: "${splitTypeStr}"` }, { status: 400 });
+        return NextResponse.json(
+          { error: `Unsupported split type: "${splitTypeStr}"` },
+          { status: 400 },
+        );
       }
 
       await prisma.$transaction(async (tx) => {
@@ -239,7 +302,10 @@ export async function POST(
         });
       });
 
-      return NextResponse.json({ success: true, status: 'APPROVED', type: 'EXPENSE' }, { status: 200 });
+      return NextResponse.json(
+        { success: true, status: 'APPROVED', type: 'EXPENSE' },
+        { status: 200 },
+      );
     }
   } catch (error: any) {
     console.error('Resolve anomaly route error:', error);

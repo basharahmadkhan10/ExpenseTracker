@@ -2,10 +2,7 @@ import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/db';
 import { getSessionUser } from '@/lib/auth';
 
-export async function GET(
-  request: Request,
-  { params }: { params: Promise<{ id: string }> }
-) {
+export async function GET(request: Request, { params }: { params: Promise<{ id: string }> }) {
   try {
     const user = await getSessionUser();
     if (!user) {
@@ -44,7 +41,7 @@ export async function GET(
       orderBy: { date: 'desc' },
     });
 
-    const formatted = expenses.map(e => ({
+    const formatted = expenses.map((e) => ({
       id: e.id,
       groupId: e.groupId,
       payerId: e.payerId,
@@ -56,7 +53,7 @@ export async function GET(
       convertedAmount: e.convertedAmount,
       date: e.date,
       splitType: e.splitType,
-      splits: e.splits.map(sp => ({
+      splits: e.splits.map((sp) => ({
         userId: sp.userId,
         name: sp.user.name,
         amount: sp.amount,
@@ -70,10 +67,7 @@ export async function GET(
   }
 }
 
-export async function POST(
-  request: Request,
-  { params }: { params: Promise<{ id: string }> }
-) {
+export async function POST(request: Request, { params }: { params: Promise<{ id: string }> }) {
   try {
     const user = await getSessionUser();
     if (!user) {
@@ -89,16 +83,8 @@ export async function POST(
       return NextResponse.json({ error: 'Access denied' }, { status: 403 });
     }
 
-    const {
-      description,
-      amount,
-      currency,
-      exchangeRate,
-      date,
-      splitType,
-      payerId,
-      splits,
-    } = await request.json();
+    const { description, amount, currency, exchangeRate, date, splitType, payerId, splits } =
+      await request.json();
 
     if (!description || !amount || !date || !payerId || !splits || splits.length === 0) {
       return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });

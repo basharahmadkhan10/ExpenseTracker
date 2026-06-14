@@ -17,7 +17,10 @@ export async function POST(request: Request) {
     }
 
     if (password.length < 4) {
-      return NextResponse.json({ error: 'Password must be at least 4 characters' }, { status: 400 });
+      return NextResponse.json(
+        { error: 'Password must be at least 4 characters' },
+        { status: 400 },
+      );
     }
 
     const existingUser = await prisma.user.findFirst({
@@ -50,12 +53,12 @@ export async function POST(request: Request) {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
       sameSite: 'strict',
-      maxAge: 7 * 24 * 60 * 60, 
+      maxAge: 7 * 24 * 60 * 60,
       path: '/',
     });
 
     return NextResponse.json(user, { status: 201 });
   } catch (error: any) {
-        return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
+    return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
   }
 }

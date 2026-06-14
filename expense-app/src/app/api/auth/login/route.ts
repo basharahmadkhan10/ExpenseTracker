@@ -34,15 +34,18 @@ export async function POST(request: Request) {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
       sameSite: 'strict',
-      maxAge: 7 * 24 * 60 * 60, 
+      maxAge: 7 * 24 * 60 * 60,
       path: '/',
     });
 
-    return NextResponse.json({
-      id: user.id,
-      name: user.name,
-    }, { status: 200 });
+    return NextResponse.json(
+      {
+        id: user.id,
+        name: user.name,
+      },
+      { status: 200 },
+    );
   } catch (error: any) {
-        return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
+    return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
   }
 }

@@ -2,10 +2,7 @@ import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/db';
 import { getSessionUser } from '@/lib/auth';
 
-export async function GET(
-  request: Request,
-  { params }: { params: Promise<{ id: string }> }
-) {
+export async function GET(request: Request, { params }: { params: Promise<{ id: string }> }) {
   try {
     const user = await getSessionUser();
     if (!user) {
@@ -40,7 +37,7 @@ export async function GET(
       orderBy: { date: 'desc' },
     });
 
-    const formatted = settlements.map(s => ({
+    const formatted = settlements.map((s) => ({
       id: s.id,
       groupId: s.groupId,
       payerId: s.payerId,
@@ -58,10 +55,7 @@ export async function GET(
   }
 }
 
-export async function POST(
-  request: Request,
-  { params }: { params: Promise<{ id: string }> }
-) {
+export async function POST(request: Request, { params }: { params: Promise<{ id: string }> }) {
   try {
     const user = await getSessionUser();
     if (!user) {

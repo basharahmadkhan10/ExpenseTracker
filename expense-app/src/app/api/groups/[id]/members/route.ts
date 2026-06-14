@@ -2,10 +2,7 @@ import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/db';
 import { getSessionUser, hashPassword } from '@/lib/auth';
 
-export async function POST(
-  request: Request,
-  { params }: { params: Promise<{ id: string }> }
-) {
+export async function POST(request: Request, { params }: { params: Promise<{ id: string }> }) {
   try {
     const user = await getSessionUser();
     if (!user) {
@@ -53,7 +50,10 @@ export async function POST(
     });
 
     if (existingMembership) {
-      return NextResponse.json({ error: 'User is already a member of this group' }, { status: 409 });
+      return NextResponse.json(
+        { error: 'User is already a member of this group' },
+        { status: 409 },
+      );
     }
 
     const member = await prisma.groupMember.create({
@@ -72,22 +72,22 @@ export async function POST(
       },
     });
 
-    return NextResponse.json({
-      id: member.user.id,
-      name: member.user.name,
-      joinedAt: member.joinedAt,
-      leftAt: member.leftAt,
-    }, { status: 201 });
+    return NextResponse.json(
+      {
+        id: member.user.id,
+        name: member.user.name,
+        joinedAt: member.joinedAt,
+        leftAt: member.leftAt,
+      },
+      { status: 201 },
+    );
   } catch (error: any) {
     console.error('Add group member error:', error);
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
   }
 }
 
-export async function PUT(
-  request: Request,
-  { params }: { params: Promise<{ id: string }> }
-) {
+export async function PUT(request: Request, { params }: { params: Promise<{ id: string }> }) {
   try {
     const user = await getSessionUser();
     if (!user) {
@@ -135,7 +135,10 @@ export async function PUT(
         }
         const currentJoined = updateData.joinedAt || gm.joinedAt;
         if (parsedLeft.getTime() < currentJoined.getTime()) {
-          return NextResponse.json({ error: 'Left date cannot be before joined date' }, { status: 400 });
+          return NextResponse.json(
+            { error: 'Left date cannot be before joined date' },
+            { status: 400 },
+          );
         }
         updateData.leftAt = parsedLeft;
       }
@@ -154,12 +157,15 @@ export async function PUT(
       data: updateData,
     });
 
-    return NextResponse.json({
-      id: updated.user.id,
-      name: updated.user.name,
-      joinedAt: updated.joinedAt,
-      leftAt: updated.leftAt,
-    }, { status: 200 });
+    return NextResponse.json(
+      {
+        id: updated.user.id,
+        name: updated.user.name,
+        joinedAt: updated.joinedAt,
+        leftAt: updated.leftAt,
+      },
+      { status: 200 },
+    );
   } catch (error: any) {
     console.error('Update group member error:', error);
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 });

@@ -25,7 +25,11 @@ export interface ImportResultRow {
 }
 
 // Helper to parse dates with multiple formats
-export function parseCsvDate(dateStr: string): { date: Date | null; isAmbiguous: boolean; error?: string } {
+export function parseCsvDate(dateStr: string): {
+  date: Date | null;
+  isAmbiguous: boolean;
+  error?: string;
+} {
   if (!dateStr || !dateStr.trim()) {
     return { date: null, isAmbiguous: false, error: 'Empty date field' };
   }
@@ -37,8 +41,18 @@ export function parseCsvDate(dateStr: string): { date: Date | null; isAmbiguous:
   const monthDayMatch = trimmed.match(monthDayRegex);
   if (monthDayMatch) {
     const months: { [key: string]: number } = {
-      jan: 0, feb: 1, mar: 2, apr: 3, may: 4, jun: 5,
-      jul: 6, aug: 7, sep: 8, oct: 9, nov: 10, dec: 11
+      jan: 0,
+      feb: 1,
+      mar: 2,
+      apr: 3,
+      may: 4,
+      jun: 5,
+      jul: 6,
+      aug: 7,
+      sep: 8,
+      oct: 9,
+      nov: 10,
+      dec: 11,
     };
     const monthName = monthDayMatch[1].toLowerCase().substring(0, 3);
     const day = parseInt(monthDayMatch[2], 10);
@@ -61,7 +75,7 @@ export function parseCsvDate(dateStr: string): { date: Date | null; isAmbiguous:
       // Check for row 34 specific case: "04-05-2026" with notes "is this April 5 or May 4?"
       // In the context of surrounding rows (April 1st, April 2nd, April 5th, April 8th),
       // "04-05-2026" is likely MM-DD-YYYY (April 5) or DD-MM-YYYY (May 4, which is out of order).
-      const isAmbiguous = (day === 4 && month === 4 && year === 2026); // May 4th vs April 5th
+      const isAmbiguous = day === 4 && month === 4 && year === 2026; // May 4th vs April 5th
       return { date: new Date(year, month, day), isAmbiguous };
     }
   }
@@ -73,7 +87,7 @@ export function parseCsvDate(dateStr: string): { date: Date | null; isAmbiguous:
 export async function findUserByName(nameStr: string) {
   if (!nameStr || !nameStr.trim()) return null;
   const name = nameStr.trim();
-  
+
   // Case insensitive match
   return prisma.user.findFirst({
     where: {
@@ -140,7 +154,7 @@ export async function processImport(csvContent: string, groupId: string, fileNam
           critical: false, // Non-critical: we can auto-resolve as negative split, but log it
         });
       }
-      
+
       // Check zero amount
       if (amount === 0) {
         anomalies.push({
@@ -243,10 +257,13 @@ export async function processImport(csvContent: string, groupId: string, fileNam
     const splitTypeStr = (row.split_type || '').trim().toLowerCase();
     const splitWithStr = (row.split_with || '').trim();
     const descriptionStr = (row.description || '').toLowerCase();
-    const isSettlement = 
-      splitTypeStr === '' && 
-      (splitWithStr.split(';').length === 1 && splitWithStr.length > 0) &&
-      (descriptionStr.includes('paid back') || descriptionStr.includes('settle') || descriptionStr.includes('deposit'));
+    const isSettlement =
+      splitTypeStr === '' &&
+      splitWithStr.split(';').length === 1 &&
+      splitWithStr.length > 0 &&
+      (descriptionStr.includes('paid back') ||
+        descriptionStr.includes('settle') ||
+        descriptionStr.includes('deposit'));
 
     if (isSettlement) {
       anomalies.push({
@@ -257,7 +274,12 @@ export async function processImport(csvContent: string, groupId: string, fileNam
     }
 
     // 6. Split Members & Date-membership Conflicts
-    const splitNames = splitWithStr ? splitWithStr.split(';').map(n => n.trim()).filter(Boolean) : [];
+    const splitNames = splitWithStr
+      ? splitWithStr
+          .split(';')
+          .map((n) => n.trim())
+          .filter(Boolean)
+      : [];
     const splitUsers: { id: string; name: string }[] = [];
 
     if (splitNames.length === 0 && !isSettlement) {
@@ -283,7 +305,7 @@ export async function processImport(csvContent: string, groupId: string, fileNam
 
         // Time-travel check: was this member active in the group on the expense date?
         if (finalDate) {
-          const membership = groupMembers.find(gm => gm.userId === sUser.id);
+          const membership = groupMembers.find((gm) => gm.userId === sUser.id);
           if (!membership) {
             anomalies.push({
               type: 'DATE_MEMBERSHIP_CONFLICT',
@@ -299,7 +321,7 @@ export async function processImport(csvContent: string, groupId: string, fileNam
             if (expTime < joined.getTime() || (left && expTime > left.getTime())) {
               anomalies.push({
                 type: 'DATE_MEMBERSHIP_CONFLICT',
-                description: `Date conflict: User "${sUser.name}" was not active on ${row.date}. Active interval: ${membership.joinedAt.toISOString().slice(0,10)} to ${membership.leftAt ? membership.leftAt.toISOString().slice(0,10) : 'Present'}.`,
+                description: `Date conflict: User "${sUser.name}" was not active on ${row.date}. Active interval: ${membership.joinedAt.toISOString().slice(0, 10)} to ${membership.leftAt ? membership.leftAt.toISOString().slice(0, 10) : 'Present'}.`,
                 critical: true,
               });
               isCritical = true;
@@ -311,7 +333,7 @@ export async function processImport(csvContent: string, groupId: string, fileNam
 
     // Also check payer's membership active on date
     if (payerUser && finalDate) {
-      const payerMembership = groupMembers.find(gm => gm.userId === payerUser!.id);
+      const payerMembership = groupMembers.find((gm) => gm.userId === payerUser!.id);
       if (!payerMembership) {
         anomalies.push({
           type: 'DATE_MEMBERSHIP_CONFLICT',
@@ -337,7 +359,8 @@ export async function processImport(csvContent: string, groupId: string, fileNam
 
     // 7. Duplicate Row Checks
     const isSwiggyswish = processedRows.find(
-      (pr) => pr.dateStr === row.date && Math.abs(pr.amount - amount) < 0.01 && pr.payer === paidByStr
+      (pr) =>
+        pr.dateStr === row.date && Math.abs(pr.amount - amount) < 0.01 && pr.payer === paidByStr,
     );
     if (isSwiggyswish) {
       anomalies.push({
@@ -350,10 +373,12 @@ export async function processImport(csvContent: string, groupId: string, fileNam
 
     // Double logging check (like Aisha dinner Swiggy Swiggy: Swiggy Swiggy swish swatch)
     // "Two rows: same dinner, diff amounts" (Row 24 Aisha 2400 vs Row 25 Rohan 2450)
-    const possibleDoubleLogging = report.find(r => 
-      r.status === 'INSERTED' &&
-      r.description.toLowerCase().replace(/[^a-z0-9]/g, '') === row.description.toLowerCase().replace(/[^a-z0-9]/g, '') &&
-      r.anomalies.length === 0 // only clean inserted ones
+    const possibleDoubleLogging = report.find(
+      (r) =>
+        r.status === 'INSERTED' &&
+        r.description.toLowerCase().replace(/[^a-z0-9]/g, '') ===
+          row.description.toLowerCase().replace(/[^a-z0-9]/g, '') &&
+        r.anomalies.length === 0, // only clean inserted ones
     );
     if (possibleDoubleLogging) {
       anomalies.push({
@@ -378,25 +403,37 @@ export async function processImport(csvContent: string, groupId: string, fileNam
           });
         }
         const splitShare = convertedAmount / splitUsers.length;
-        splitUsers.forEach(u => {
+        splitUsers.forEach((u) => {
           parsedSplits.push({ userId: u.id, name: u.name, amount: splitShare });
         });
-      } else if (splitTypeStr === 'unequal') { // exact amounts
+      } else if (splitTypeStr === 'unequal') {
+        // exact amounts
         // split_details: Rohan 700; Priya 400; Meera 400
-        const detailParts = splitDetailsStr.split(';').map(p => p.trim()).filter(Boolean);
+        const detailParts = splitDetailsStr
+          .split(';')
+          .map((p) => p.trim())
+          .filter(Boolean);
         let sum = 0;
         for (const part of detailParts) {
           const lastSpace = part.lastIndexOf(' ');
           if (lastSpace === -1) {
-            anomalies.push({ type: 'INCONSISTENT_SPLIT', description: `Invalid split detail format: "${part}"`, critical: true });
+            anomalies.push({
+              type: 'INCONSISTENT_SPLIT',
+              description: `Invalid split detail format: "${part}"`,
+              critical: true,
+            });
             isCritical = true;
             break;
           }
           const name = part.substring(0, lastSpace).trim();
           const val = parseFloat(part.substring(lastSpace + 1).trim());
-          const u = splitUsers.find(su => su.name.toLowerCase() === name.toLowerCase());
+          const u = splitUsers.find((su) => su.name.toLowerCase() === name.toLowerCase());
           if (!u) {
-            anomalies.push({ type: 'INCONSISTENT_SPLIT', description: `Split detail user "${name}" not in split list`, critical: true });
+            anomalies.push({
+              type: 'INCONSISTENT_SPLIT',
+              description: `Split detail user "${name}" not in split list`,
+              critical: true,
+            });
             isCritical = true;
             break;
           }
@@ -413,21 +450,35 @@ export async function processImport(csvContent: string, groupId: string, fileNam
         }
       } else if (splitTypeStr === 'percentage') {
         // split_details: Aisha 30%; Rohan 30%; Priya 30%; Meera 20%
-        const detailParts = splitDetailsStr.split(';').map(p => p.trim()).filter(Boolean);
+        const detailParts = splitDetailsStr
+          .split(';')
+          .map((p) => p.trim())
+          .filter(Boolean);
         let sumPct = 0;
         for (const part of detailParts) {
           const lastSpace = part.lastIndexOf(' ');
           if (lastSpace === -1) {
-            anomalies.push({ type: 'INCONSISTENT_SPLIT', description: `Invalid percentage format: "${part}"`, critical: true });
+            anomalies.push({
+              type: 'INCONSISTENT_SPLIT',
+              description: `Invalid percentage format: "${part}"`,
+              critical: true,
+            });
             isCritical = true;
             break;
           }
           const name = part.substring(0, lastSpace).trim();
-          const valStr = part.substring(lastSpace + 1).replace('%', '').trim();
+          const valStr = part
+            .substring(lastSpace + 1)
+            .replace('%', '')
+            .trim();
           const pct = parseFloat(valStr);
-          const u = splitUsers.find(su => su.name.toLowerCase() === name.toLowerCase());
+          const u = splitUsers.find((su) => su.name.toLowerCase() === name.toLowerCase());
           if (!u) {
-            anomalies.push({ type: 'INCONSISTENT_SPLIT', description: `Percentage user "${name}" not in split list`, critical: true });
+            anomalies.push({
+              type: 'INCONSISTENT_SPLIT',
+              description: `Percentage user "${name}" not in split list`,
+              critical: true,
+            });
             isCritical = true;
             break;
           }
@@ -445,21 +496,32 @@ export async function processImport(csvContent: string, groupId: string, fileNam
         }
       } else if (splitTypeStr === 'share') {
         // split_details: Aisha 1; Rohan 2; Priya 1; Dev 2
-        const detailParts = splitDetailsStr.split(';').map(p => p.trim()).filter(Boolean);
+        const detailParts = splitDetailsStr
+          .split(';')
+          .map((p) => p.trim())
+          .filter(Boolean);
         let totalShares = 0;
         const sharesMap: { userId: string; name: string; shares: number }[] = [];
         for (const part of detailParts) {
           const lastSpace = part.lastIndexOf(' ');
           if (lastSpace === -1) {
-            anomalies.push({ type: 'INCONSISTENT_SPLIT', description: `Invalid share format: "${part}"`, critical: true });
+            anomalies.push({
+              type: 'INCONSISTENT_SPLIT',
+              description: `Invalid share format: "${part}"`,
+              critical: true,
+            });
             isCritical = true;
             break;
           }
           const name = part.substring(0, lastSpace).trim();
           const val = parseFloat(part.substring(lastSpace + 1).trim());
-          const u = splitUsers.find(su => su.name.toLowerCase() === name.toLowerCase());
+          const u = splitUsers.find((su) => su.name.toLowerCase() === name.toLowerCase());
           if (!u) {
-            anomalies.push({ type: 'INCONSISTENT_SPLIT', description: `Share user "${name}" not in split list`, critical: true });
+            anomalies.push({
+              type: 'INCONSISTENT_SPLIT',
+              description: `Share user "${name}" not in split list`,
+              critical: true,
+            });
             isCritical = true;
             break;
           }
@@ -468,7 +530,7 @@ export async function processImport(csvContent: string, groupId: string, fileNam
         }
 
         if (!isCritical) {
-          sharesMap.forEach(sm => {
+          sharesMap.forEach((sm) => {
             const shareAmount = (sm.shares / totalShares) * convertedAmount;
             parsedSplits.push({ userId: sm.userId, name: sm.name, amount: shareAmount });
           });
@@ -491,8 +553,8 @@ export async function processImport(csvContent: string, groupId: string, fileNam
           sessionId: session.id,
           rowNumber: rowNum,
           rawRowData: JSON.stringify(row),
-          anomalyType: anomalies.find(a => a.critical)?.type || 'INCONSISTENT_SPLIT',
-          description: anomalies.map(a => a.description).join(' | '),
+          anomalyType: anomalies.find((a) => a.critical)?.type || 'INCONSISTENT_SPLIT',
+          description: anomalies.map((a) => a.description).join(' | '),
           status: 'PENDING',
         },
       });
@@ -527,7 +589,13 @@ export async function processImport(csvContent: string, groupId: string, fileNam
             rowNumber: rowNum,
             description: row.description,
             status: 'FLAGGED',
-            anomalies: [{ type: 'UNKNOWN_MEMBER', description: `Unknown receiver: ${receiverName}`, critical: true }],
+            anomalies: [
+              {
+                type: 'UNKNOWN_MEMBER',
+                description: `Unknown receiver: ${receiverName}`,
+                critical: true,
+              },
+            ],
             details: 'Parked in review queue due to unknown receiver in settlement.',
           });
         } else {
@@ -612,7 +680,7 @@ export async function processImport(csvContent: string, groupId: string, fileNam
           description: row.description,
           status: 'INSERTED',
           anomalies,
-          details: `Imported as expense. Converted Amount: ₹${convertedAmount.toFixed(2)}. Split shares recorded for ${parsedSplits.map(s => `${s.name}: ₹${s.amount.toFixed(2)}`).join(', ')}.`,
+          details: `Imported as expense. Converted Amount: ₹${convertedAmount.toFixed(2)}. Split shares recorded for ${parsedSplits.map((s) => `${s.name}: ₹${s.amount.toFixed(2)}`).join(', ')}.`,
         });
       }
 
@@ -625,7 +693,7 @@ export async function processImport(csvContent: string, groupId: string, fileNam
   }
 
   // Update Import Session status
-  const finalStatus = report.some(r => r.status === 'ERROR') ? 'FAILED' : 'COMPLETED';
+  const finalStatus = report.some((r) => r.status === 'ERROR') ? 'FAILED' : 'COMPLETED';
   await prisma.importSession.update({
     where: { id: session.id },
     data: { status: finalStatus },

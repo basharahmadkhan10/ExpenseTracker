@@ -2,10 +2,7 @@ import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/db';
 import { getSessionUser } from '@/lib/auth';
 
-export async function GET(
-  request: Request,
-  { params }: { params: Promise<{ id: string }> }
-) {
+export async function GET(request: Request, { params }: { params: Promise<{ id: string }> }) {
   try {
     const user = await getSessionUser();
     if (!user) {
@@ -84,7 +81,7 @@ export async function GET(
       },
     });
 
-    const detailedSplits = splits.map(s => ({
+    const detailedSplits = splits.map((s) => ({
       expenseId: s.expense.id,
       date: s.expense.date,
       description: s.expense.description,
@@ -122,7 +119,7 @@ export async function GET(
       },
     });
 
-    const detailedPaidExpenses = paidExpenses.map(e => ({
+    const detailedPaidExpenses = paidExpenses.map((e) => ({
       expenseId: e.id,
       date: e.date,
       description: e.description,
@@ -131,7 +128,7 @@ export async function GET(
       exchangeRate: e.exchangeRate,
       convertedAmount: e.convertedAmount,
       splitType: e.splitType,
-      splits: e.splits.map(sp => ({
+      splits: e.splits.map((sp) => ({
         userId: sp.userId,
         name: sp.user.name,
         amount: sp.amount,
@@ -158,7 +155,7 @@ export async function GET(
       },
     });
 
-    const detailedSettlementsPaid = settlementsPaid.map(s => ({
+    const detailedSettlementsPaid = settlementsPaid.map((s) => ({
       settlementId: s.id,
       date: s.date,
       amount: s.amount,
@@ -186,7 +183,7 @@ export async function GET(
       },
     });
 
-    const detailedSettlementsReceived = settlementsReceived.map(s => ({
+    const detailedSettlementsReceived = settlementsReceived.map((s) => ({
       settlementId: s.id,
       date: s.date,
       amount: s.amount,
@@ -198,24 +195,30 @@ export async function GET(
     const totalPaid = detailedPaidExpenses.reduce((sum, e) => sum + e.convertedAmount, 0);
     const totalOwed = detailedSplits.reduce((sum, s) => sum + s.yourShare, 0);
     const totalSettlementsPaid = detailedSettlementsPaid.reduce((sum, s) => sum + s.amount, 0);
-    const totalSettlementsReceived = detailedSettlementsReceived.reduce((sum, s) => sum + s.amount, 0);
+    const totalSettlementsReceived = detailedSettlementsReceived.reduce(
+      (sum, s) => sum + s.amount,
+      0,
+    );
 
-    const netBalance = (totalPaid + totalSettlementsPaid) - (totalOwed + totalSettlementsReceived);
+    const netBalance = totalPaid + totalSettlementsPaid - (totalOwed + totalSettlementsReceived);
 
-    return NextResponse.json({
-      user: targetUserProfile,
-      summary: {
-        totalPaid: Math.round(totalPaid * 100) / 100,
-        totalOwed: Math.round(totalOwed * 100) / 100,
-        settlementsPaid: Math.round(totalSettlementsPaid * 100) / 100,
-        settlementsReceived: Math.round(totalSettlementsReceived * 100) / 100,
-        netBalance: Math.round(netBalance * 100) / 100,
+    return NextResponse.json(
+      {
+        user: targetUserProfile,
+        summary: {
+          totalPaid: Math.round(totalPaid * 100) / 100,
+          totalOwed: Math.round(totalOwed * 100) / 100,
+          settlementsPaid: Math.round(totalSettlementsPaid * 100) / 100,
+          settlementsReceived: Math.round(totalSettlementsReceived * 100) / 100,
+          netBalance: Math.round(netBalance * 100) / 100,
+        },
+        splits: detailedSplits,
+        paidExpenses: detailedPaidExpenses,
+        settlementsPaid: detailedSettlementsPaid,
+        settlementsReceived: detailedSettlementsReceived,
       },
-      splits: detailedSplits,
-      paidExpenses: detailedPaidExpenses,
-      settlementsPaid: detailedSettlementsPaid,
-      settlementsReceived: detailedSettlementsReceived,
-    }, { status: 200 });
+      { status: 200 },
+    );
   } catch (error) {
     console.error('Fetch drilldown details error:', error);
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 });

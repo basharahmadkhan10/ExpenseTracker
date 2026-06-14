@@ -5,11 +5,9 @@ import prisma from './db';
 
 const JWT_SECRET = process.env.JWT_SECRET || 'super-secret-jwt-key-change-this-in-production';
 
-
 export async function hashPassword(password: string): Promise<string> {
   return bcrypt.hash(password, 10);
 }
-
 
 export async function comparePassword(password: string, hash: string): Promise<boolean> {
   return bcrypt.compare(password, hash);

@@ -3,10 +3,7 @@ import { prisma } from '@/lib/db';
 import { getSessionUser } from '@/lib/auth';
 import { processImport } from '@/lib/importer';
 
-export async function POST(
-  request: Request,
-  { params }: { params: Promise<{ id: string }> }
-) {
+export async function POST(request: Request, { params }: { params: Promise<{ id: string }> }) {
   try {
     const user = await getSessionUser();
     if (!user) {
@@ -39,10 +36,7 @@ export async function POST(
   }
 }
 
-export async function GET(
-  request: Request,
-  { params }: { params: Promise<{ id: string }> }
-) {
+export async function GET(request: Request, { params }: { params: Promise<{ id: string }> }) {
   try {
     const user = await getSessionUser();
     if (!user) {
@@ -72,7 +66,7 @@ export async function GET(
       orderBy: { uploadedAt: 'desc' },
     });
 
-    const formatted = sessions.map(s => ({
+    const formatted = sessions.map((s) => ({
       id: s.id,
       fileName: s.fileName,
       uploadedAt: s.uploadedAt,
