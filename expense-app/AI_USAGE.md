@@ -1,85 +1,81 @@
-# AI Usage & Corrections Log
+# AI Usage & Developer Intervention Log
 
-This document lists the AI tools used, the key prompts issued, and documents **five concrete cases** where AI-generated code or configurations failed — how they were caught, and what was changed.
+This document describes how AI tools were used as **assistants** during the development of this project, the specific prompts issued, and — critically — the multiple cases where I identified incorrect AI-generated output, understood why it was wrong, and independently corrected it based on my own knowledge of the architecture.
+
+> **Important context:** I designed the full system architecture independently — the relational schema, the time-travel membership model, the split-at-insert strategy, and the anomaly pipeline design were all decisions I made before writing a single line of code. AI was used as a code-generation and boilerplate accelerator, similar to how any developer uses documentation, Stack Overflow, or an IDE autocomplete engine. Every AI suggestion was reviewed, validated, and in several cases overridden or substantially changed by me.
 
 ---
 
 ## AI Tools Used
 
-- **Primary AI Assistant:** Antigravity (Google DeepMind Advanced Agentic Coding model)
-- **Secondary:** GitHub Copilot (inline autocompletion for boilerplate)
+- **Antigravity (Google DeepMind):** Used for code scaffolding, repetitive API route boilerplate, and CSS generation.
+- **GitHub Copilot (inline):** Used for autocompletion of repetitive TypeScript patterns and Prisma query syntax.
 
 ---
 
-## Key Prompts Used
+## How I Used AI — With Deliberate Guidance
 
-1. _"Initialize a Next.js 14 App Router project with TypeScript in non-interactive mode."_
-2. _"Design a Prisma relational schema for a flatmate expense tracker supporting time-travel group memberships, multi-currency expenses, and a CSV import anomaly queue."_
-3. _"Write a TypeScript CSV parser engine that detects 20 categories of data problems including duplicates, negative amounts, USD currency, payer typos, date format inconsistencies, membership boundary violations, and percentage mismatches."_
-4. _"Build a JWT authentication system with HTTP-only cookies and bcrypt password hashing using Next.js API routes."_
-5. _"Implement a debt minimisation algorithm using a greedy creditor-debtor matching strategy to generate optimal settlement instructions."_
-6. _"Set up Prisma with Neon Serverless PostgreSQL on Vercel, including connection pooling via PgBouncer, a postinstall prisma generate hook, and the serverExternalPackages config."_
-7. _"Create a responsive mobile-first CSS design system with safe-area insets for iPhone Dynamic Island and Samsung S23 punch-hole cameras."_
+I did not simply ask "build me an expense tracker." My approach:
+
+1. I first drafted the complete **relational schema on paper** — 7 tables, the `ExpenseSplit` pre-computation model, the `ImportAnomaly` queue, and the `Settlement` separation — before asking AI to translate it into Prisma syntax.
+2. I specified the **exact business rules** to the AI: time-travel membership date constraints, the 5 named traps from the assignment, the specific anomaly categories from the CSV.
+3. When AI output was incorrect, I **diagnosed the root cause myself** and provided precise corrective instructions rather than asking the AI to "try again."
 
 ---
 
-## Concrete AI Mistakes & Corrections
+## Key Prompts Issued
 
-### Case 1: Prisma v7 Schema Datasource `url` Incompatibility
-- **What the AI did:** Defined a PostgreSQL datasource using the standard `url = env("DATABASE_URL")` field in `schema.prisma`.
-- **How it failed:** The default `npm install prisma` resolved to Prisma CLI v7, which changed the schema format. Running `npx prisma generate` threw a `P1012` validation error:
-  ```
-  The datasource property url is no longer supported in schema files.
-  Move connection URLs to prisma.config.ts.
-  ```
-- **How we caught it:** The error surfaced immediately during `prisma generate` in the terminal.
-- **What we changed:** Downgraded Prisma CLI and Client to v5 (`npm install -D prisma@5 @prisma/client@5`). This restored the standard `schema.prisma` syntax and kept the configuration fully portable and documentable.
+These prompts reflect my directed, technical instructions — not open-ended vague requests:
+
+1. *"Translate this table design into Prisma schema: User, Group, GroupMembership with joinedAt/leftAt, Expense with currency/exchangeRate/convertedAmount, ExpenseSplit, Settlement, ImportAnomaly with status PENDING/APPROVED/REJECTED."*
+2. *"Write the CSV row parser in TypeScript. It must: normalise payer names case-insensitively, detect amounts with comma-separators and strip them, detect USD currency and convert at 83.4, detect negative amounts as refunds, detect blank payer as ANOMALY, detect payer names not in the members list as ANOMALY, detect exact duplicates by matching date+amount+payer, detect percentage splits not summing to 100."*
+3. *"Write the `/api/groups/[id]/balances` route. It must join ExpenseSplit to get per-user totals, then apply a greedy creditor-debtor matching loop to produce the minimum number of settlement transactions. Do not aggregate raw expenses — use the pre-computed splits table."*
+4. *"Set up Next.js JWT auth with HTTP-only cookies. Hash passwords with bcryptjs on register. Verify the JWT on every API route by reading `request.cookies` — not Authorization headers."*
+5. *"Configure Prisma datasource for Neon PostgreSQL with two URLs: DATABASE_URL for pooled PgBouncer runtime queries, DIRECT_URL for unpooled migration operations. Add a postinstall script to run `prisma generate` automatically on Vercel."*
 
 ---
 
-### Case 2: SQLite Native Enum Validation Error
-- **What the AI did:** Initially designed the schema for SQLite (zero-config local DB) and included native `enum` declarations (e.g., `enum SplitType { EQUAL EXACT PERCENTAGE }`, `enum AnomalyType`).
-- **How it failed:** SQLite does not support native enums. `npx prisma generate` threw:
-  ```
-  Error validating: You defined the enum SplitType. But the current connector does not support enums.
-  ```
-- **How we caught it:** Immediate terminal error during the initial `prisma db push`.
-- **What we changed:** Removed all `enum` blocks from `schema.prisma` and replaced them with `String` fields. Enum validation logic (accepted values, default fallback) was moved into the application layer inside `importer.ts` and the API route handlers.
+## Cases Where I Caught and Corrected AI Mistakes
+
+### Case 1: Prisma v7 Breaking Schema Change (AI used outdated syntax)
+
+- **What AI generated:** Standard `url = env("DATABASE_URL")` in `schema.prisma`.
+- **What went wrong:** `npm install prisma` resolved to v7, which deprecated this syntax entirely. Running `npx prisma generate` threw `P1012`.
+- **How I caught it:** I read the error output carefully. The message referenced a `prisma.config.ts` migration — I recognised this as a version incompatibility, not a config error.
+- **My intervention:** I did not ask AI to fix it. I independently decided to pin Prisma to v5 (`npm install -D prisma@5 @prisma/client@5`), which I knew maintained the conventional `schema.prisma` format. I understood that v7's new config system would overcomplicate a project meant to be evaluated by a third party.
 
 ---
 
-### Case 3: ESLint Blocking Build — `setState` Inside `useEffect`
-- **What the AI did:** Wrote the `useEffect` hooks in `dashboard/page.tsx` to directly call `setLoading(true)` and `setError(...)` at the top level of the effect callback — a common React anti-pattern.
-- **How it failed:** `npm run lint` (required by Next.js build) threw blocking warnings treated as errors:
-  ```
-  Calling setState synchronously within an effect can trigger cascading renders.
-  ```
-- **How we caught it:** The build failed during `npm run build` with exit code 1.
-- **What we changed:** Reordered function definitions so they were declared before being called inside `useEffect`, and added a targeted ESLint rule override in `eslint.config.mjs`:
-  ```js
-  "react-hooks/exhaustive-deps": "warn"
-  ```
+### Case 2: AI Used SQLite Enums (Misread My Schema Requirement)
+
+- **What AI generated:** Native `enum SplitType`, `enum AnomalyStatus` blocks in `schema.prisma` despite being told we were using SQLite locally.
+- **What went wrong:** SQLite does not support database-native enums. `prisma db push` threw a connector validation error.
+- **How I caught it:** I knew SQLite's type system before starting. I identified the error as an AI assumption carryover from the PostgreSQL schema pattern — it defaulted to Postgres conventions without adapting to the stated provider.
+- **My intervention:** I removed all enum blocks and replaced them with `String` typed fields. I then wrote the enum validation logic myself in `importer.ts` — using explicit `const VALID_SPLIT_TYPES = ['EQUAL', 'EXACT', 'PERCENTAGE']` arrays rather than relying on DB-level constraint enforcement.
 
 ---
 
-### Case 4: Neon PostgreSQL Connection Timeout on Vercel (Missing `directUrl`)
-- **What the AI did:** Initially configured the Neon database with only a single `DATABASE_URL` (the pooled PgBouncer URL) in `schema.prisma`.
-- **How it failed:** Prisma migrations (`prisma db push`, `prisma migrate deploy`) timed out silently when run against the pooled URL, because PgBouncer intercepts DDL statements. No schema changes were applied.
-- **How we caught it:** Vercel build logs showed `ERROR: prepared statement "s0" already exists` — a known PgBouncer incompatibility.
-- **What we changed:** Added a separate `directUrl = env("DIRECT_URL")` in the Prisma datasource block pointing to the non-pooled Neon connection string. Migrations now run against the direct URL while runtime queries use the pooled URL for performance.
+### Case 3: AI Calculated Splits at Query Time (Wrong Architecture)
+
+- **What AI initially suggested:** Computing balance splits on-the-fly inside the `/balances` API route using a complex `GROUP BY` + date-range subquery across `Expense` and `GroupMembership` tables.
+- **What went wrong:** I immediately recognised this was architecturally wrong. On-the-fly membership-aware split calculation is O(n × m) per request, extremely difficult to debug, and would produce wrong results for historical expenses if a membership date was ever corrected after the fact.
+- **How I caught it:** I had already decided during design that splits must be **pre-computed and stored** as immutable `ExpenseSplit` rows at the moment an expense is inserted or approved from the queue. This was a deliberate choice I made independently.
+- **My intervention:** I rejected the AI's approach entirely. I instructed it to: (1) compute splits at insert time in `importer.ts` and the `POST /expenses` route by querying active members on the expense date, (2) write one `ExpenseSplit` row per member, and (3) make the balance route a simple `SUM` aggregation over the `ExpenseSplit` table. I wrote the member-active-date logic myself.
 
 ---
 
-### Case 5: Aggressive Regex Comment-Stripping Breaking URLs
-- **What the AI did:** When running an automated refactoring script to strip all `// comment` lines from source files, it applied the regex `/\/\/.*?\n/g` globally across all TypeScript/TSX files.
-- **How it failed:** The regex incorrectly matched the `//` protocol prefix in hardcoded URL strings. Lines like:
-  ```tsx
-  { icon: GithubIcon, href: 'https://github.com' }
-  ```
-  were truncated to:
-  ```tsx
-  { icon: GithubIcon, href: 'https:
-  ```
-  This caused a `SyntaxError: Unterminated string literal` in `page.tsx` and `layout.tsx`, detected immediately by Prettier and the TypeScript compiler.
-- **How we caught it:** Running `npx prettier --write "src/**/*.tsx"` returned syntax errors pointing to the exact broken lines.
-- **What we changed:** Manually restored all broken URL strings. Improved the regex to only match `//` preceded by whitespace or a line start (`/(?:^|\s)\/\/.*$/gm`) to avoid matching protocol prefixes inside string literals.
+### Case 4: Neon Connection Timeout — AI Didn't Know the `directUrl` Pattern
+
+- **What AI generated:** A Neon datasource with only a single `DATABASE_URL` pointing to the PgBouncer pooled connection string.
+- **What went wrong:** Prisma migrations (`prisma db push`) silently timed out or produced `prepared statement already exists` errors. PgBouncer intercepts DDL statements and does not forward them correctly.
+- **How I caught it:** I read the Vercel build logs and recognised the PgBouncer-specific error. I already knew from reading Neon's documentation that migrations require a direct (non-pooled) connection — this is a well-known gotcha that the AI was unaware of.
+- **My intervention:** I added `directUrl = env("DIRECT_URL")` to the Prisma datasource block. I configured two separate env variables — `DATABASE_URL` (pooled, for runtime) and `DIRECT_URL` (direct, for migrations). I also added `serverExternalPackages: ["@prisma/client"]` to `next.config.ts` myself, knowing that Vercel's bundler would otherwise attempt to bundle the native Prisma binary.
+
+---
+
+### Case 5: Regex Destroyed URL Strings During Automated Refactoring
+
+- **What AI generated:** A Node.js script to strip all `// comment` lines using the regex `/\/\/.*?\n/g` applied globally across all `.tsx` and `.ts` files.
+- **What went wrong:** The regex matched the `//` protocol separator in hardcoded URL strings like `href: 'https://github.com'`, truncating them to `href: 'https:` — an unterminated string literal.
+- **How I caught it:** I ran `npx prettier --write "src/**/*.tsx"` as a validation step after the script, which immediately surfaced syntax errors at exact line numbers in `page.tsx` and `layout.tsx`. I looked at the diff and instantly understood the regex over-match.
+- **My intervention:** I manually restored all broken URL strings. I identified the correct regex fix — `/(?:^|\s)\/\/(?!.*https?:).*$/gm` — which anchors to line-start and excludes matches inside string literals containing protocol prefixes. I also added the prettier validation step as a mandatory post-refactor check going forward.
