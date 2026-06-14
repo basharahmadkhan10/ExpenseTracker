@@ -532,7 +532,7 @@ export default function DashboardPage() {
 
   return (
     <div className="min-h-screen bg-dots-grid font-sans pb-16" style={{ color: 'var(--text-color)' }}>
-      {/* Top Navbar: Solid deep charcoal with yellow branding (Logo removed) */}
+      
       <header className="sticky top-0 z-40 bg-[#1b1b1b] border-b-4 border-black px-6 py-4 flex items-center justify-between shadow-none">
         <div className="flex items-center gap-3">
           <h1 className="text-sm font-black text-white tracking-widest uppercase">
@@ -541,7 +541,7 @@ export default function DashboardPage() {
         </div>
 
         <div className="flex items-center gap-6">
-          {/* Light/Dark mode switcher */}
+          
           <button
             onClick={toggleTheme}
             className="p-2.5 rounded-xl bg-neutral-900 border-2 border-neutral-700 text-[#f5bb1b] hover:text-white hover:bg-neutral-850 transition cursor-pointer shadow-[2px_2px_0px_rgba(255,255,255,0.1)] flex items-center justify-center"
@@ -565,10 +565,10 @@ export default function DashboardPage() {
         </div>
       </header>
 
-      {/* Main Workspace Layout */}
+      
       <main className="max-w-7xl mx-auto px-6 py-8 grid grid-cols-1 lg:grid-cols-4 gap-8">
         
-        {/* Left Column: Group Sidebar (Charcoal dark cards) */}
+        
         <section className="lg:col-span-1 space-y-6">
           <div className="neobrutal-card-dark p-6 space-y-4">
             <div className="flex items-center justify-between border-b-2 border-neutral-800 pb-3">
@@ -655,11 +655,11 @@ export default function DashboardPage() {
           )}
         </section>
 
-        {/* Right Columns: Main Tab Workspace */}
+        
         <section className="lg:col-span-3 space-y-6">
           {selectedGroup ? (
             <>
-              {/* Tab Navigation (Neo-Brutalist Tabs style) */}
+              
               <div className="flex flex-wrap gap-4 text-[10px] font-black uppercase tracking-widest mb-6">
                 {[
                   { id: 'balances', label: 'Balances Summary', icon: Users },
@@ -683,17 +683,17 @@ export default function DashboardPage() {
                 ))}
               </div>
 
-              {/* Error box */}
+              
               {error && (
                 <div className="rounded-2xl bg-red-950/40 border-3 border-black px-4 py-3 text-xs font-bold text-red-400 shadow-[2px_2px_0px_#000]">
                   {error}
                 </div>
               )}
 
-              {/* TAB CONTENT: BALANCES */}
+              
               {activeTab === 'balances' && balancesData && (
                 <div className="space-y-6">
-                  {/* Aisha simplified card: Clean high-contrast white card */}
+                  
                   <div className="neobrutal-card-white p-6">
                     <h3 className="text-xs font-black text-slate-900 dark:text-white uppercase tracking-widest mb-3 flex items-center gap-1.5">
                       <span className="neobrutal-tag-yellow flex items-center gap-1">
@@ -727,7 +727,7 @@ export default function DashboardPage() {
                     </div>
                   </div>
 
-                  {/* Net Balances Table: White card */}
+                  
                   <div className="neobrutal-card-white overflow-hidden">
                     <div className="p-5 border-b-2 border-black flex justify-between items-center bg-white dark:bg-[#1c1c1e]">
                       <h3 className="text-xs font-black text-slate-900 dark:text-white uppercase tracking-widest">Running Net Balances</h3>
@@ -767,7 +767,7 @@ export default function DashboardPage() {
                       </tbody>
                     </table>
                   </div>
-                  {/* Chart view: White card */}
+                  
                   {chartData.length > 0 && (
                     <div className="neobrutal-card-white p-6 space-y-4">
                       <div className="space-y-1">
@@ -807,10 +807,10 @@ export default function DashboardPage() {
                 </div>
               )}
 
-              {/* TAB CONTENT: EXPENSES LIST */}
+              
               {activeTab === 'expenses' && (
                 <div className="space-y-6">
-                  {/* CSV Importer: White Card */}
+                  
                   <div className="neobrutal-card-white p-6 flex flex-col md:flex-row md:items-center justify-between gap-6">
                     <div className="space-y-1">
                       <h3 className="text-xs font-black text-slate-900 dark:text-white uppercase tracking-widest flex items-center gap-1.5">
@@ -842,7 +842,7 @@ export default function DashboardPage() {
                     </form>
                   </div>
 
-                  {/* CSV import report: White background layout */}
+                  
                   {importReport && (
                     <div className="neobrutal-card-yellow p-6 space-y-4 text-black">
                       <div className="flex justify-between items-center">
@@ -893,7 +893,7 @@ export default function DashboardPage() {
                     </div>
                   )}
 
-                  {/* Manual Expense entry list: White card layout */}
+                  
                   <div className="neobrutal-card-white overflow-hidden">
                     <div className="p-5 border-b-2 border-black flex justify-between items-center bg-white dark:bg-[#1c1c1e]">
                       <h3 className="text-xs font-black text-slate-900 dark:text-white uppercase tracking-widest">Group Expenses</h3>
@@ -960,7 +960,7 @@ export default function DashboardPage() {
                 </div>
               )}
 
-              {/* TAB CONTENT: SETTLEMENTS */}
+              
               {activeTab === 'settlements' && (
                 <div className="neobrutal-card-white overflow-hidden">
                   <div className="p-5 border-b-2 border-black flex justify-between items-center bg-white dark:bg-[#1c1c1e]">
@@ -1012,7 +1012,7 @@ export default function DashboardPage() {
                 </div>
               )}
 
-              {/* TAB CONTENT: REVIEW QUEUE */}
+              
               {activeTab === 'anomalies' && (
                 <div className="space-y-6">
                   <div className="neobrutal-card-yellow p-6 space-y-2 text-black">
@@ -1096,10 +1096,10 @@ export default function DashboardPage() {
                 </div>
               )}
 
-              {/* TAB CONTENT: MEMBERS */}
+              
               {activeTab === 'members' && (
                 <div className="space-y-6">
-                  {/* Active Members Grid */}
+                  
                   <div className="neobrutal-card-white overflow-hidden">
                     <div className="p-5 border-b-2 border-black flex justify-between items-center bg-white dark:bg-[#1c1c1e]">
                       <h3 className="text-xs font-black text-slate-900 dark:text-white uppercase tracking-widest">Time-Travel Memberships</h3>
@@ -1190,7 +1190,7 @@ export default function DashboardPage() {
         </section>
       </main>
 
-      {/* MODAL: CREATE GROUP */}
+      
       {isCreateGroupOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/80 backdrop-blur-sm p-4">
           <div className="w-full max-w-md neobrutal-card-white p-6 space-y-4">
@@ -1228,7 +1228,7 @@ export default function DashboardPage() {
         </div>
       )}
 
-      {/* MODAL: INVITE MEMBER */}
+      
       {isAddMemberOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/80 backdrop-blur-sm p-4">
           <div className="w-full max-w-md neobrutal-card-white p-6 space-y-4">
@@ -1278,7 +1278,7 @@ export default function DashboardPage() {
         </div>
       )}
 
-      {/* MODAL: DRILLDOWN (Rohan's Ask) */}
+      
       {drilldownUser && drilldownData && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/80 backdrop-blur-sm p-4">
           <div className="w-full max-w-3xl neobrutal-card-white p-6 space-y-6 max-h-[85vh] overflow-y-auto text-black dark:text-white">
@@ -1295,7 +1295,7 @@ export default function DashboardPage() {
               </button>
             </div>
 
-            {/* Aggregated Equation */}
+            
             <div className="bg-slate-50 dark:bg-neutral-900 border-2 border-black rounded-2xl p-5 flex justify-between items-center text-center text-xs shadow-[2px_2px_0px_#000] text-black dark:text-white">
               <div>
                 <span className="text-[9px] text-slate-500 dark:text-slate-450 uppercase font-bold block mb-1">Paid</span>
@@ -1325,7 +1325,7 @@ export default function DashboardPage() {
               </div>
             </div>
 
-            {/* Splits list */}
+            
             <div className="space-y-3">
               <h4 className="text-[10px] font-black text-slate-450 uppercase tracking-widest">Owed Splits</h4>
               <div className="max-h-56 overflow-y-auto space-y-2 text-[11px] font-medium text-black dark:text-white">
@@ -1354,7 +1354,7 @@ export default function DashboardPage() {
               </div>
             </div>
 
-            {/* Paid list */}
+            
             <div className="space-y-3">
               <h4 className="text-[10px] font-black text-slate-450 uppercase tracking-widest">Paid Costs</h4>
               <div className="max-h-56 overflow-y-auto space-y-2 text-[11px] font-medium text-black dark:text-white">
@@ -1386,7 +1386,7 @@ export default function DashboardPage() {
         </div>
       )}
 
-      {/* MODAL: ADD EXPENSE */}
+      
       {isAddExpenseOpen && selectedGroup && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/80 backdrop-blur-sm p-4">
           <div className="w-full max-w-lg neobrutal-card-white p-6 space-y-4 max-h-[90vh] overflow-y-auto">
@@ -1527,7 +1527,7 @@ export default function DashboardPage() {
         </div>
       )}
 
-      {/* MODAL: RECORD SETTLEMENT */}
+      
       {isRecordSettlementOpen && selectedGroup && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/80 backdrop-blur-sm p-4">
           <div className="w-full max-w-md neobrutal-card-white p-6 space-y-4">
@@ -1604,7 +1604,7 @@ export default function DashboardPage() {
         </div>
       )}
 
-      {/* MODAL: OVERRIDE ANOMALY (Meera's review resolve form) */}
+      
       {editingAnomaly && selectedGroup && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/80 backdrop-blur-sm p-4">
           <div className="w-full max-w-lg neobrutal-card-white p-6 space-y-4 max-h-[90vh] overflow-y-auto">
@@ -1717,7 +1717,7 @@ export default function DashboardPage() {
         </div>
       )}
 
-      {/* MODAL: CONFIRM DELETE GROUP */}
+      
       {confirmDeleteGroupId && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/80 backdrop-blur-sm p-4">
           <div className="w-full max-w-sm neobrutal-card-white p-6 space-y-5">
