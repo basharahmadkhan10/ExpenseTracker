@@ -165,7 +165,8 @@ export default function DashboardPage() {
       const groupsRes = await fetch('/api/groups');
       const groupsData = await groupsRes.json();
       setGroups(groupsData);
-      setSelectedGroup(data);
+      const created = groupsData.find((g: any) => g.id === data.id);
+      setSelectedGroup(created || { ...data, members: [] });
       setIsCreateGroupOpen(false);
       setNewGroupName('');
     } catch (err: any) {
@@ -250,7 +251,8 @@ export default function DashboardPage() {
     if (!selectedGroup) return;
 
     const formattedSplits: any[] = [];
-    selectedGroup.members.forEach((m: any) => {
+    const members = selectedGroup.members || [];
+    members.forEach((m: any) => {
       const val = expenseSplitDetails[m.id];
       if (val) {
         formattedSplits.push({ userId: m.id, amount: parseFloat(val) });
@@ -369,6 +371,9 @@ export default function DashboardPage() {
   const generateChartData = () => {
     if (!selectedGroup || (!expenses.length && !settlements.length)) return [];
 
+    const members = selectedGroup.members || [];
+    if (members.length === 0) return [];
+
     // Date filters check
     const startLimit = startDate ? new Date(startDate).getTime() : 0;
     const endLimit = endDate ? new Date(endDate).getTime() : Infinity;
@@ -405,7 +410,7 @@ export default function DashboardPage() {
 
     // Initialize running balances
     const runningBalances: { [name: string]: number } = {};
-    selectedGroup.members.forEach((m: any) => {
+    members.forEach((m: any) => {
       runningBalances[m.name] = 0;
     });
 
@@ -416,7 +421,7 @@ export default function DashboardPage() {
       const firstDate = new Date(events[0].date);
       firstDate.setDate(firstDate.getDate() - 1);
       const point: any = { dateStr: firstDate.toLocaleDateString(undefined, { month: 'short', day: 'numeric' }) };
-      selectedGroup.members.forEach((m: any) => {
+      members.forEach((m: any) => {
         point[m.name] = 0;
       });
       chartPoints.push(point);
@@ -424,7 +429,7 @@ export default function DashboardPage() {
 
     events.forEach(ev => {
       if (ev.type === 'EXPENSE') {
-        const payerName = selectedGroup.members.find((m: any) => m.id === ev.payerId)?.name;
+        const payerName = members.find((m: any) => m.id === ev.payerId)?.name;
         if (payerName) {
           runningBalances[payerName] += ev.amount;
         }
@@ -434,8 +439,8 @@ export default function DashboardPage() {
           }
         });
       } else {
-        const payerName = selectedGroup.members.find((m: any) => m.id === ev.payerId)?.name;
-        const receiverName = selectedGroup.members.find((m: any) => m.id === ev.receiverId)?.name;
+        const payerName = members.find((m: any) => m.id === ev.payerId)?.name;
+        const receiverName = members.find((m: any) => m.id === ev.receiverId)?.name;
         if (payerName) {
           runningBalances[payerName] += ev.amount; // payer paid money out, balances positive
         }
@@ -447,7 +452,7 @@ export default function DashboardPage() {
       const point: any = {
         dateStr: ev.date.toLocaleDateString(undefined, { month: 'short', day: 'numeric' }),
       };
-      selectedGroup.members.forEach((m: any) => {
+      members.forEach((m: any) => {
         point[m.name] = Math.round(runningBalances[m.name] * 100) / 100;
       });
       chartPoints.push(point);
@@ -457,6 +462,8 @@ export default function DashboardPage() {
   };
 
   const chartData = generateChartData();
+
+  const groupMembers = selectedGroup?.members || [];
 
   if (loading) {
     return (
@@ -1019,7 +1026,7 @@ export default function DashboardPage() {
                     </div>
 
                     <div className="p-6 grid grid-cols-1 md:grid-cols-2 gap-6">
-                      {selectedGroup.members.map((m: any) => (
+                      {groupMembers.map((m: any) => (
                         <div key={m.id} className="rounded-xl border border-slate-800 bg-slate-950 p-5 space-y-4 flex flex-col justify-between">
                           <div className="space-y-2">
                             <div className="flex items-center gap-2">
@@ -1371,7 +1378,7 @@ export default function DashboardPage() {
                     onChange={(e) => setExpensePayer(e.target.value)}
                     className="block w-full rounded-lg border border-slate-800 bg-slate-950 px-4 py-2 text-slate-100 outline-none focus:border-teal-500 transition"
                   >
-                    {selectedGroup.members.map((m: any) => (
+                    {groupMembers.map((m: any) => (
                       <option key={m.id} value={m.id}>{m.name}</option>
                     ))}
                   </select>
@@ -1394,7 +1401,7 @@ export default function DashboardPage() {
                 <div className="bg-slate-950 p-4 rounded-lg border border-slate-800 space-y-3">
                   <h4 className="text-xs font-bold text-slate-400 uppercase tracking-widest">Specify Split Shares (₹ in Converted INR)</h4>
                   <div className="grid grid-cols-2 gap-3">
-                    {selectedGroup.members.map((m: any) => (
+                    {groupMembers.map((m: any) => (
                       <div key={m.id} className="flex items-center justify-between gap-2">
                         <span className="text-xs text-slate-300">{m.name}</span>
                         <input
@@ -1448,7 +1455,7 @@ export default function DashboardPage() {
                   onChange={(e) => setSettlePayer(e.target.value)}
                   className="block w-full rounded-lg border border-slate-800 bg-slate-950 px-4 py-2 text-slate-100 outline-none focus:border-teal-500 transition"
                 >
-                  {selectedGroup.members.map((m: any) => (
+                  {groupMembers.map((m: any) => (
                     <option key={m.id} value={m.id}>{m.name}</option>
                   ))}
                 </select>
@@ -1461,7 +1468,7 @@ export default function DashboardPage() {
                   onChange={(e) => setSettleReceiver(e.target.value)}
                   className="block w-full rounded-lg border border-slate-800 bg-slate-950 px-4 py-2 text-slate-100 outline-none focus:border-teal-500 transition"
                 >
-                  {selectedGroup.members.map((m: any) => (
+                  {groupMembers.map((m: any) => (
                     <option key={m.id} value={m.id}>{m.name}</option>
                   ))}
                 </select>
