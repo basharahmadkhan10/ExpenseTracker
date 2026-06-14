@@ -32,7 +32,7 @@ export default function LandingPage() {
   const [activeNav, setActiveNav] = useState('home');
   const [theme, setTheme] = useState<'light' | 'dark'>('light');
 
-  // Contact Form State
+  
   const [contactName, setContactName] = useState('');
   const [contactEmail, setContactEmail] = useState('');
   const [contactSubject, setContactSubject] = useState('');
@@ -292,9 +292,9 @@ export default function LandingPage() {
               <span className="text-[10px] font-bold text-slate-450 uppercase tracking-widest">Connect with our Devs:</span>
               <div className="flex gap-2.5">
                 {[
-                  { icon: GithubIcon, href: 'https://github.com' },
-                  { icon: LinkedinIcon, href: 'https://linkedin.com' },
-                  { icon: TwitterIcon, href: 'https://twitter.com' }
+                  { icon: GithubIcon, href: 'https:
+                  { icon: LinkedinIcon, href: 'https:
+                  { icon: TwitterIcon, href: 'https:
                 ].map((item, idx) => (
                   <a 
                     key={idx}
