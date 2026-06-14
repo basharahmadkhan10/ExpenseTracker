@@ -65,7 +65,7 @@ export async function POST(
 
     amount = Math.round(amount * 100) / 100;
 
-    let currency = (finalRowData.currency || 'INR').trim().toUpperCase();
+    const currency = (finalRowData.currency || 'INR').trim().toUpperCase();
     let exchangeRate = 1.0;
     let convertedAmount = amount;
 
