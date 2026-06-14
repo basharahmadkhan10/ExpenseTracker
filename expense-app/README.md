@@ -1,72 +1,147 @@
 # Flatmate Expense Tracker & Reconciliation App
 
-A robust Next.js application built with TypeScript, Prisma, SQLite, and Tailwind CSS. The app simplifies flatmate expense sharing by parsing historical records, enforcing time-travel membership constraints, and resolving messy spreadsheet data anomalies.
+A full-stack, production-ready **Next.js 14+** application built to solve shared flatmate expense management. It parses messy historical CSV records, enforces time-travel group membership boundaries, transparently handles multi-currency conversions, and routes anomalous data through an oversight review queue before committing to the ledger.
 
-## Features
+**Live Deployment:** https://expense-tracker-eight-nu-64.vercel.app
+**GitHub Repo:** https://github.com/basharahmadkhan10/ExpenseTracker
 
-1. **Authentication:** JWT-based session security via HTTP-only cookies.
-2. **Time-Travel Memberships:** Manage join/leave dates for group members. Balance splits automatically exclude members on dates they were inactive (e.g. Meera in April, Sam in March).
-3. **Traceable CSV Importer:** Ingests CSV spreadsheet records. Clean records are imported immediately, while anomalies are parked in a DB-backed review queue.
-4. **Meera's Anomaly Review Screen:** View flagged anomalies (duplicates, typos, conflicts) and resolve them inline (Approve with corrections or Reject/Discard).
-5. **Rohan's Explain Balance Drill-down:** Click any net balance to see the exact split equations and transfers composing it (no magic numbers).
-6. **Priya's Exchange Rate Transparency:** Auditable exchange rate annotations next to USD trip bookings.
-7. **Timeline View:** Recharts running balance visualization tracking member accounts over time.
-8. **Reconciliation:** Simplified debt payouts (who pays whom, how much).
-9. **Manual CRUD:** Create expenses (equal/custom splits) and settle transfers.
+---
+
+## Core Features
+
+| Feature | Description |
+|---|---|
+| **JWT Authentication** | HTTP-only cookie sessions, bcrypt password hashing |
+| **Time-Travel Memberships** | Join/leave dates enforced per expense date — Meera excluded from April splits, Sam excluded from March splits |
+| **Traceable CSV Importer** | Row-by-row parsing with live import report. Clean rows committed instantly; anomalies queued |
+| **Anomaly Review Queue** | Inline Approve (with corrections) or Reject for each flagged CSV row |
+| **Balance Drilldown** | Click any net balance to see exact split equations (no magic numbers) |
+| **Exchange Rate Transparency** | USD amounts stored with original amount, currency, rate, and INR conversion |
+| **Balance Timeline Chart** | Recharts running balance visualization over time |
+| **Debt Minimisation Engine** | Optimal settlement instructions (who pays whom, minimum transactions) |
+| **Manual Expense & Settlement CRUD** | Create expenses with equal/exact/percentage splits |
+| **Dark / Light Mode** | System-aware theme with carbon gradient dark mode |
+| **Responsive Mobile UI** | Optimised for Samsung S23, iPhone 14, Realme — safe areas, 44px touch targets |
+
+---
+
+## Technology Stack
+
+| Layer | Technology |
+|---|---|
+| Framework | Next.js 14 (App Router, TypeScript) |
+| Database | Neon Serverless PostgreSQL |
+| ORM | Prisma v5 |
+| Styling | Tailwind CSS v4 + Custom CSS Design System |
+| Auth | JWT (jose) + bcryptjs |
+| Charts | Recharts |
+| Hosting | Vercel |
+| AI Assistant | Antigravity (Google DeepMind) |
 
 ---
 
 ## Local Setup & Quickstart
 
-### 1. Install Dependencies
-Run from the `expense-app` directory:
+### Prerequisites
+- Node.js 18+ 
+- A Neon database account (free) or local PostgreSQL
+
+### 1. Clone the Repository
+```bash
+git clone https://github.com/basharahmadkhan10/ExpenseTracker.git
+cd ExpenseTracker/expense-app
+```
+
+### 2. Install Dependencies
 ```bash
 npm install
 ```
 
-### 2. Configure Database & Seed Default Users
-Initialize the local SQLite database and populate initial members (Aisha, Rohan, Priya, Meera, Sam, Dev) with their correct join and departure date boundaries:
+### 3. Configure Environment Variables
+Copy the example and fill in your values:
 ```bash
-# Push Prisma schema to SQLite dev.db
+cp .env.example .env
+```
+
+Edit `.env`:
+```env
+DATABASE_URL="postgresql://user:password@host/db?sslmode=require&pgbouncer=true"
+DIRECT_URL="postgresql://user:password@host/db?sslmode=require"
+JWT_SECRET="your-secure-random-string-at-least-32-chars"
+```
+
+### 4. Push Schema & Seed Database
+```bash
+# Apply Prisma schema to the database
 npx prisma db push
 
-# Seed the database
+# Seed initial members and group (Aisha, Rohan, Priya, Meera, Sam, Dev)
 npx tsx prisma/seed.ts
 ```
 
-### 3. Start Development Server
+### 5. Start Development Server
 ```bash
 npm run dev
 ```
-Open [http://localhost:3000](http://localhost:3000) in your browser.
+Open [http://localhost:3000](http://localhost:3000)
 
 ---
 
-## Evaluation Workflow Walkthrough
+## Vercel Deployment
 
-1. **Sign In:** Use a seeded user (e.g., `Aisha` with password `password123`).
-2. **Select Group:** The dashboard displays the default seeded group **"Flatmates"**.
-3. **Inspect Initial State:** Check the *Manage Members* tab. Notice Meera is marked as left on March 31st, and Sam joined April 15th.
-4. **Import Spreadsheet:** 
-   - Click the *Expenses List* tab.
-   - Select `Expenses Export.csv` located in the project root.
-   - Click **Upload & Parse**.
-   - Notice the *Live CSV Import Report* rendering row-by-row status. Clean items (rent, groceries) are imported directly, while USD amounts are auto-converted at `83.4` rate.
-5. **Review Anomalies:**
-   - Click the *Anomalies review* tab (representing Meera's screen).
-   - Resolve **Row 11** (typo `"Priya S"`): Click **Approve/Resolve**, change `"Priya S"` to `"Priya"` in the paid_by input, and click **Approve & Insert**.
-   - Resolve **Row 6** (duplicate swiggySwiggy swat swish Swiggy swap Marina Bites swiggy): Click **Reject** to discard it.
-   - Resolve date conflicts and percentage mismatches.
-6. **Verify Balance Calculations:**
-   - Under the *Balances Summary* tab, view the net balances table and Aisha's simplified payments list.
-   - Click **Explain Balance** next to Rohan. You will see a detailed breakdown of splits (Rohan's request). Notice the USD conversion annotations (Priya's request).
-   - Toggle the *Date Filter* (e.g. from `2026-04-15` onwards) to verify Sam's balance behaves correctly, excluding pre-April utilities.
-   - Review the *Balance Timeline View* chart showing inflection points at Meera's departure and Sam's arrival.
+1. Import the `basharahmadkhan10/ExpenseTracker` GitHub repo into Vercel.
+2. Set **Root Directory** to `expense-app`.
+3. Add these Environment Variables in Vercel dashboard:
+   - `DATABASE_URL` (Neon pooled connection string)
+   - `DIRECT_URL` (Neon direct connection string)
+   - `JWT_SECRET` (any secure random string)
+4. Deploy. Vercel auto-runs `prisma generate` via the `postinstall` hook.
 
+---
 
-## 🏗️ Deployment Architecture
-- **Frontend**: Next.js 14+ (App Router)
-- **Database**: Neon Serverless Postgres
-- **ORM**: Prisma
-- **Hosting**: Vercel
-- **Styling**: Tailwind CSS v4
+## Evaluation Walkthrough
+
+1. **Sign In:** Use `Aisha` / `password123` (or any seeded user).
+2. **Select the "Flatmates" Group** from the left sidebar.
+3. **Inspect Members Tab:** Verify Meera (`leftAt: 2026-03-31`) and Sam (`joinedAt: 2026-04-15`) date boundaries.
+4. **Import CSV:**
+   - Go to *Expenses* tab → Upload `Expenses Export.csv` → Click **Upload & Parse**
+   - The **Live Import Report** shows row-by-row status, anomaly flags, and auto-resolution notes.
+5. **Review Anomalies Tab:**
+   - Resolve Row 11 (typo `"Priya S"`) — correct to `"Priya"` and Approve.
+   - Reject Row 6 (exact duplicate of Marina Bites dinner).
+6. **Balances Tab:**
+   - View optimal settlement instructions.
+   - Click **Explain Balance** next to any member for the full drilldown.
+   - Set date filter `2026-04-15` → present to verify Sam's boundary is respected.
+7. **Toggle Dark Mode** in the top-right to verify the carbon-gradient dark theme.
+
+---
+
+## Project Structure
+
+```
+expense-app/
+├── prisma/
+│   ├── schema.prisma      # Relational schema (PostgreSQL)
+│   ├── seed.ts            # Seeds users, group, memberships
+│   └── migrations/        # Migration history
+├── src/
+│   ├── app/
+│   │   ├── api/           # Next.js API routes (auth, groups, expenses, etc.)
+│   │   ├── dashboard/     # Main dashboard UI
+│   │   ├── login/         # Login page
+│   │   ├── register/      # Registration page
+│   │   └── globals.css    # Design system + mobile CSS
+│   ├── components/
+│   │   └── Preloader.tsx  # Curtain animation preloader
+│   └── lib/
+│       ├── auth.ts        # JWT + bcrypt utilities
+│       ├── db.ts          # Prisma singleton
+│       ├── importer.ts    # CSV parsing & anomaly detection engine
+│       └── constants.ts   # App-wide constants
+├── SCOPE.md               # Anomaly log + database schema
+├── DECISIONS.md           # Architecture decision log
+├── AI_USAGE.md            # AI tools, prompts, and error cases
+└── README.md              # This file
+```
