@@ -17,6 +17,8 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: "Flatmate Expense Tracker & Reconciliation",
+  keywords: ["expense", "tracker", "flatmates", "finance", "split", "bills"],
+  authors: [{ name: "Bashar" }],
   description: "Track shared household expenses, audit USD conversions, and manage group memberships over time with automated anomaly reviews.",
 };
 
