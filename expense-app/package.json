@@ -36,5 +36,14 @@
     "prisma": "^5.22.0",
     "tailwindcss": "^4",
     "typescript": "^5"
-  }
+  },
+  "description": "Flatmate Expense Tracker with Time-Travel Membership & Multi-Currency Reconciliation",
+  "author": "Bashar",
+  "keywords": [
+    "nextjs",
+    "prisma",
+    "neon",
+    "expense-tracker",
+    "finance"
+  ]
 }
