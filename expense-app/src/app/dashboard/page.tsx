@@ -110,8 +110,7 @@ export default function DashboardPage() {
         setSelectedGroup(groups[0]);
       }
     } catch (err) {
-      console.error(err);
-      setError('Failed to fetch initial session details');
+            setError('Failed to fetch initial session details');
     } finally {
       setLoading(false);
     }
@@ -148,8 +147,7 @@ export default function DashboardPage() {
       const anomData = await anomRes.json();
       setAnomalies(anomRes.ok ? anomData : []);
     } catch (err) {
-      console.error(err);
-      setError('Failed to fetch group data');
+            setError('Failed to fetch group data');
     }
   };
 
@@ -387,8 +385,7 @@ export default function DashboardPage() {
         setDrilldownData(data);
       }
     } catch (err) {
-      console.error(err);
-    }
+          }
   };
 
   const handleResolveAnomaly = async (anomalyId: string, action: 'APPROVE' | 'REJECT') => {

@@ -61,8 +61,7 @@ export async function GET(
 
     return NextResponse.json(formattedGroup, { status: 200 });
   } catch (error) {
-    console.error('Fetch group details error:', error);
-    return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
+        return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
   }
 }
 
@@ -95,7 +94,6 @@ export async function DELETE(
 
     return NextResponse.json({ success: true, message: 'Group deleted successfully' });
   } catch (error) {
-    console.error('Delete group error:', error);
-    return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
+        return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
   }
 }
