@@ -30,8 +30,13 @@ yarn-debug.log*
 yarn-error.log*
 .pnpm-debug.log*
 
-# env files (can opt-in for committing if needed)
-.env*
+# env files — NEVER commit .env
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+# .env.example is safe to commit (no real secrets)
 
 # vercel
 .vercel
@@ -40,6 +45,9 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 
-# sqlite database files
+# sqlite database files (local dev only)
 *.db
 *.db-journal
+
+# prisma local migration files (optional: remove if you want to commit migrations)
+# prisma/migrations/

@@ -62,3 +62,39 @@ export async function GET(
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
   }
 }
+
+export async function DELETE(
+  request: Request,
+  { params }: { params: Promise<{ id: string }> }
+) {
+  try {
+    const user = await getSessionUser();
+    if (!user) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
+
+    const { id } = await params;
+
+    // Verify membership
+    const membership = await prisma.groupMember.findFirst({
+      where: {
+        groupId: id,
+        userId: user.id,
+      },
+    });
+
+    if (!membership) {
+      return NextResponse.json({ error: 'Group not found or access denied' }, { status: 403 });
+    }
+
+    // Delete the group (cascade onDelete handles memberships, expenses, settlements, sessions, etc.)
+    await prisma.group.delete({
+      where: { id },
+    });
+
+    return NextResponse.json({ success: true, message: 'Group deleted successfully' });
+  } catch (error) {
+    console.error('Delete group error:', error);
+    return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
+  }
+}

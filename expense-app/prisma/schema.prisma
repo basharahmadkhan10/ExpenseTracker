@@ -1,6 +1,7 @@
 datasource db {
-  provider = "sqlite"
-  url      = env("DATABASE_URL")
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
 }
 
 generator client {
@@ -53,12 +54,12 @@ model Expense {
   groupId         String
   payerId         String
   description     String
-  amount          Float          // Original amount
-  currency        String         @default("INR") // USD or INR
+  amount          Float
+  currency        String         @default("INR")
   exchangeRate    Float          @default(1.0)
-  convertedAmount Float          // Amount in INR
+  convertedAmount Float
   date            DateTime
-  splitType       String         // EQUAL, EXACT, PERCENTAGE
+  splitType       String
   createdAt       DateTime       @default(now())
 
   // Relations
@@ -71,7 +72,7 @@ model ExpenseSplit {
   id        String   @id @default(uuid())
   expenseId String
   userId    String
-  amount    Float    // Share in INR
+  amount    Float
   createdAt DateTime @default(now())
 
   // Relations
@@ -84,9 +85,9 @@ model ExpenseSplit {
 model Settlement {
   id          String   @id @default(uuid())
   groupId     String
-  payerId     String   // Person paying the settlement
-  receiverId  String   // Person receiving the settlement
-  amount      Float    // Settlement amount in INR
+  payerId     String
+  receiverId  String
+  amount      Float
   date        DateTime
   createdAt   DateTime @default(now())
 
@@ -101,7 +102,7 @@ model ImportSession {
   groupId    String
   fileName   String
   uploadedAt DateTime        @default(now())
-  status     String          @default("PENDING") // PENDING, COMPLETED, FAILED
+  status     String          @default("PENDING")
   
   // Relations
   group      Group           @relation(fields: [groupId], references: [id], onDelete: Cascade)
@@ -112,10 +113,10 @@ model ImportAnomaly {
   id           String        @id @default(uuid())
   sessionId    String
   rowNumber    Int
-  rawRowData   String        // JSON string of the raw CSV row
-  anomalyType  String        // NEGATIVE_AMOUNT, DUPLICATE_ROW, SETTLEMENT_LOGGED_AS_EXPENSE, etc.
+  rawRowData   String
+  anomalyType  String
   description  String
-  status       String        @default("PENDING") // PENDING, APPROVED, REJECTED
+  status       String        @default("PENDING")
   createdAt    DateTime      @default(now())
 
   // Relations
