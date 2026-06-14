@@ -271,7 +271,7 @@ export async function processImport(csvContent: string, groupId: string, fileNam
       splitTypeStr === '' &&
       splitWithStr.split(';').length === 1 &&
       splitWithStr.length > 0 &&
-      (descriptionStr.includes('paid back') ||
+      ((descriptionStr.includes('paid') && descriptionStr.includes('back')) ||
         descriptionStr.includes('settle') ||
         descriptionStr.includes('deposit'));
 
