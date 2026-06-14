@@ -149,7 +149,7 @@ export default function LoginPage() {
             disabled={loading}
             className="w-full neobrutal-btn-yellow py-3 text-xs font-black disabled:opacity-50"
           >
-            {loading ? 'Authenticating...' : 'Enter Arena →'}
+            {loading ? 'Authenticating...' : 'Log In →'}
           </button>
         </form>
 

@@ -707,11 +707,11 @@ export default function LandingPage() {
             </span>
           </div>
 
-          <p className="text-[10px] font-bold text-slate-500 uppercase tracking-widest text-center">
+          <p className="text-[10px] font-bold text-white/60 uppercase tracking-widest text-center">
             © 2026 Expense Tracker Inc. All rights reserved. Developed with AI transparency.
           </p>
 
-          <div className="flex gap-4 text-xs font-bold uppercase tracking-wider text-slate-400">
+          <div className="flex gap-4 text-xs font-bold uppercase tracking-wider text-white/80">
             <Link href="/login" className="hover:text-[#f5bb1b] transition">
               Sign In
             </Link>
