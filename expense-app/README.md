@@ -62,3 +62,11 @@ Open [http://localhost:3000](http://localhost:3000) in your browser.
    - Click **Explain Balance** next to Rohan. You will see a detailed breakdown of splits (Rohan's request). Notice the USD conversion annotations (Priya's request).
    - Toggle the *Date Filter* (e.g. from `2026-04-15` onwards) to verify Sam's balance behaves correctly, excluding pre-April utilities.
    - Review the *Balance Timeline View* chart showing inflection points at Meera's departure and Sam's arrival.
+
+
+## 🏗️ Deployment Architecture
+- **Frontend**: Next.js 14+ (App Router)
+- **Database**: Neon Serverless Postgres
+- **ORM**: Prisma
+- **Hosting**: Vercel
+- **Styling**: Tailwind CSS v4
