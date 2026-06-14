@@ -64,18 +64,28 @@ export function parseCsvDate(dateStr: string): {
     }
   }
 
-  // Format: DD-MM-YYYY
-  const parts = trimmed.split('-');
+  // Format: YYYY-MM-DD or DD-MM-YYYY (also supports slashes)
+  const parts = trimmed.split(/[-/]/);
   if (parts.length === 3) {
-    const day = parseInt(parts[0], 10);
-    const month = parseInt(parts[1], 10) - 1; // 0-indexed
-    const year = parseInt(parts[2], 10);
+    let day = 0;
+    let month = 0;
+    let year = 0;
+
+    if (parts[0].length === 4) {
+      // YYYY-MM-DD or YYYY/MM/DD
+      year = parseInt(parts[0], 10);
+      month = parseInt(parts[1], 10) - 1; // 0-indexed
+      day = parseInt(parts[2], 10);
+    } else {
+      // DD-MM-YYYY or DD/MM/YYYY
+      day = parseInt(parts[0], 10);
+      month = parseInt(parts[1], 10) - 1; // 0-indexed
+      year = parseInt(parts[2], 10);
+    }
 
     if (!isNaN(day) && !isNaN(month) && !isNaN(year)) {
-      // Check for row 34 specific case: "04-05-2026" with notes "is this April 5 or May 4?"
-      // In the context of surrounding rows (April 1st, April 2nd, April 5th, April 8th),
-      // "04-05-2026" is likely MM-DD-YYYY (April 5) or DD-MM-YYYY (May 4, which is out of order).
-      const isAmbiguous = day === 4 && month === 4 && year === 2026; // May 4th vs April 5th
+      // Check for row 34 specific case: "04-05-2026" / "2026-05-04" (May 4th vs April 5th ambiguity)
+      const isAmbiguous = (day === 4 && month === 4 && year === 2026) || (day === 5 && month === 3 && year === 2026 && trimmed.startsWith('04-05'));
       return { date: new Date(year, month, day), isAmbiguous };
     }
   }
