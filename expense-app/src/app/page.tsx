@@ -113,7 +113,7 @@ export default function LandingPage() {
   return (
     <div className="min-h-screen bg-dots-grid selection:bg-[#f5bb1b] selection:text-black">
       {/* Navbar: High contrast header with name title (logo removed) and dark/light switcher */}
-      <header className="sticky top-0 z-50 bg-[#1b1b1b] border-b-4 border-black px-6 py-4 shadow-none">
+      <header className="sticky top-0 z-50 bg-[#1b1b1b] border-b border-[rgba(255,255,255,0.08)] px-4 sm:px-6 py-3 shadow-none safe-top">
         <div className="max-w-7xl mx-auto flex items-center justify-between">
           <div className="flex items-center gap-3">
             <span className="text-lg font-black tracking-widest text-white uppercase font-mono">
@@ -152,7 +152,7 @@ export default function LandingPage() {
           </nav>
 
           {/* Controls & Get Started */}
-          <div className="flex items-center gap-5">
+          <div className="flex items-center gap-3">
             {/* Theme Toggle Button */}
             <button
               onClick={toggleTheme}
@@ -186,7 +186,7 @@ export default function LandingPage() {
       {/* Section 1: Hero Section (Vibrant Neo-Brutalist Layout with floating shapes) */}
       <section
         id="home"
-        className="bg-[#1b1b1b] text-white pt-20 pb-24 relative overflow-hidden border-b-4 border-black"
+        className="bg-[#1b1b1b] text-white pt-16 sm:pt-20 pb-16 sm:pb-24 relative overflow-hidden border-b-4 border-black"
       >
         {/* Floating animated decorative shapes */}
         <div className="absolute top-12 left-10 w-8 h-8 bg-[#f5bb1b]/20 border-2 border-[#f5bb1b]/40 rounded-lg transform rotate-12 floating-shape"></div>
@@ -194,7 +194,7 @@ export default function LandingPage() {
         <div className="absolute bottom-20 left-1/4 w-10 h-10 bg-[#f5bb1b]/10 border-2 border-[#f5bb1b]/20 rounded-2xl transform rotate-45 floating-shape-delayed-2"></div>
         <div className="absolute bottom-10 right-1/4 w-8 h-8 bg-white/5 border border-white/10 rounded transform rotate-12 floating-shape"></div>
 
-        <div className="max-w-7xl mx-auto px-6 grid grid-cols-1 lg:grid-cols-2 gap-12 items-center relative z-10">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-12 items-center relative z-10">
           {/* Left Column: Headings & CTAs */}
           <div className="space-y-8">
             <div className="inline-flex items-center gap-2 bg-neutral-900 border-2 border-black rounded-xl px-4 py-1.5 text-[#f5bb1b] text-[10px] font-black uppercase tracking-wider shadow-[2px_2px_0px_#000]">

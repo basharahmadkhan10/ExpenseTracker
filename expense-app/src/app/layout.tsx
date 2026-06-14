@@ -23,6 +23,15 @@ export const metadata: Metadata = {
     'Track shared household expenses, audit USD conversions, and manage group memberships over time with automated anomaly reviews.',
 };
 
+export const viewport = {
+  width: 'device-width',
+  initialScale: 1,
+  maximumScale: 5,
+  userScalable: true,
+  themeColor: '#1b1b1b',
+  colorScheme: 'dark light',
+};
+
 export default function RootLayout({
   children,
 }: Readonly<{

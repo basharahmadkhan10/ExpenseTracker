@@ -380,3 +380,96 @@ html.light .text-slate-300 { color: #666666 !important; }
 
 .Toastify__close-button:hover { opacity: 1; }
 .Toastify__progress-bar { background: #f5bb1b !important; }
+
+
+/* ==========================================
+   MOBILE-FIRST RESPONSIVE SYSTEM
+   S23 / iPhone 14-15 / Realme safe areas
+   ========================================== */
+
+/* Safe area padding for devices with notch/Dynamic Island */
+.safe-top    { padding-top:    max(1rem, env(safe-area-inset-top)); }
+.safe-bottom { padding-bottom: max(1rem, env(safe-area-inset-bottom)); }
+.safe-x      { padding-left:   max(1rem, env(safe-area-inset-left)); padding-right: max(1rem, env(safe-area-inset-right)); }
+
+/* Minimum touch target - Apple & Google HIG requires 44x44px */
+.touch-target {
+  min-height: 44px;
+  min-width: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Mobile card — no border radius crush, breathing room */
+.mobile-card {
+  border-radius: 1.25rem;
+  padding: 1.25rem;
+  margin-bottom: 0;
+}
+
+/* Scrollable table wrapper — prevents horizontal overflow on mobile */
+.table-scroll {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  border-radius: 1rem;
+}
+
+/* Fade in up animation for page content */
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.animate-fade-in-up {
+  animation: fadeInUp 0.4s ease-out both;
+}
+
+.animate-fade-in-up-delay-1 { animation-delay: 0.05s; }
+.animate-fade-in-up-delay-2 { animation-delay: 0.10s; }
+.animate-fade-in-up-delay-3 { animation-delay: 0.15s; }
+.animate-fade-in-up-delay-4 { animation-delay: 0.20s; }
+.animate-fade-in-up-delay-5 { animation-delay: 0.25s; }
+
+/* Tab pill scroll — lets tab row scroll horizontally on small screens */
+.tab-scroll {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+}
+.tab-scroll::-webkit-scrollbar { display: none; }
+
+/* Bottom nav fixed bar — added spacing so content isn't hidden under it */
+.has-bottom-nav {
+  padding-bottom: calc(4.5rem + env(safe-area-inset-bottom));
+}
+
+/* Mobile form fields — larger font to prevent iOS auto-zoom (must be >= 16px) */
+@media (max-width: 640px) {
+  .neobrutal-input {
+    font-size: 16px !important;
+    padding: 0.75rem 1rem !important;
+  }
+
+  .neobrutal-btn-yellow,
+  .neobrutal-btn-black,
+  .neobrutal-btn-white {
+    padding-top: 0.875rem !important;
+    padding-bottom: 0.875rem !important;
+    min-height: 48px !important;
+    font-size: 0.75rem !important;
+  }
+
+  /* Tighten card padding on mobile */
+  .neobrutal-card-white,
+  .neobrutal-card-dark,
+  .neobrutal-card-yellow {
+    border-radius: 1.25rem !important;
+  }
+
+  /* Table cells readable on small screens */
+  table th, table td {
+    padding: 0.75rem 0.875rem !important;
+    font-size: 0.7rem !important;
+  }
+}

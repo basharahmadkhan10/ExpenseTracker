@@ -559,11 +559,11 @@ export default function DashboardPage() {
 
   return (
     <div
-      className="min-h-screen bg-dots-grid font-sans pb-16"
+      className="min-h-screen bg-dots-grid font-sans has-bottom-nav"
       style={{ color: 'var(--text-color)' }}
     >
-      <header className="sticky top-0 z-40 bg-[#1b1b1b] border-b-4 border-black px-6 py-4 flex items-center justify-between shadow-none">
-        <div className="flex items-center gap-3">
+      <header className="sticky top-0 z-40 bg-[#1b1b1b] border-b border-[rgba(255,255,255,0.08)] px-4 sm:px-6 py-3 flex items-center justify-between shadow-none safe-top">
+        <div className="flex items-center gap-2">
           <h1 className="text-sm font-black text-white tracking-widest uppercase">
             EXPENSE{' '}
             <span className="text-[#111111] bg-[#f5bb1b] border-2 border-black px-2 py-0.5 rounded shadow-[2px_2px_0px_#000]">
@@ -572,33 +572,33 @@ export default function DashboardPage() {
           </h1>
         </div>
 
-        <div className="flex items-center gap-6">
+        <div className="flex items-center gap-3">
           <button
             onClick={toggleTheme}
-            className="p-2.5 rounded-xl bg-neutral-900 border-2 border-neutral-700 text-[#f5bb1b] hover:text-white hover:bg-neutral-850 transition cursor-pointer shadow-[2px_2px_0px_rgba(255,255,255,0.1)] flex items-center justify-center"
+            className="p-2.5 rounded-xl bg-neutral-900 border-2 border-neutral-700 text-[#f5bb1b] hover:text-white transition cursor-pointer touch-target"
             title="Toggle Theme"
           >
             {theme === 'light' ? <Moon className="w-4 h-4" /> : <Sun className="w-4 h-4" />}
           </button>
 
-          <div className="flex items-center gap-2">
-            <span className="h-2.5 w-2.5 rounded-full bg-[#f5bb1b] border border-black animate-pulse"></span>
+          <div className="hidden sm:flex items-center gap-2">
+            <span className="h-2 w-2 rounded-full bg-[#f5bb1b] border border-black animate-pulse"></span>
             <span className="text-xs font-bold text-white uppercase tracking-widest">
-              Hello, {currentUser?.name}
+              {currentUser?.name}
             </span>
           </div>
 
           <button
             onClick={handleLogout}
-            className="flex items-center gap-1.5 text-slate-400 hover:text-[#f5bb1b] text-xs font-black uppercase tracking-wider transition cursor-pointer"
+            className="flex items-center gap-1.5 text-slate-400 hover:text-[#f5bb1b] text-xs font-black uppercase tracking-wider transition cursor-pointer touch-target"
           >
             <LogOut className="h-4 w-4" />
-            Logout
+            <span className="hidden sm:inline">Logout</span>
           </button>
         </div>
       </header>
 
-      <main className="max-w-7xl mx-auto px-6 py-8 grid grid-cols-1 lg:grid-cols-4 gap-8">
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 py-6 grid grid-cols-1 lg:grid-cols-4 gap-6">
         <section className="lg:col-span-1 space-y-6">
           <div className="neobrutal-card-dark p-6 space-y-4">
             <div className="flex items-center justify-between border-b-2 border-neutral-800 pb-3">
@@ -703,7 +703,7 @@ export default function DashboardPage() {
         <section className="lg:col-span-3 space-y-6">
           {selectedGroup ? (
             <>
-              <div className="flex flex-wrap gap-4 text-[10px] font-black uppercase tracking-widest mb-6">
+              <div className="tab-scroll flex gap-2 pb-1 text-[10px] font-black uppercase tracking-widest mb-4">
                 {[
                   { id: 'balances', label: 'Balances Summary', icon: Users },
                   { id: 'expenses', label: 'Expenses List', icon: DollarSign },
@@ -749,7 +749,7 @@ export default function DashboardPage() {
                       Optimal settlements computed to clear outstanding debts:
                     </p>
 
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                       {balancesData.reconciliation.map((tx: any, idx: number) => (
                         <div
                           key={idx}
@@ -781,14 +781,15 @@ export default function DashboardPage() {
                   </div>
 
                   <div className="neobrutal-card-white overflow-hidden">
-                    <div className="p-5 border-b-2 border-black flex justify-between items-center bg-white dark:bg-[#1c1c1e]">
+                    <div className="p-4 sm:p-5 border-b-2 border-black flex flex-col sm:flex-row sm:justify-between sm:items-center gap-2 bg-white dark:bg-[#1c1c1e]">
                       <h3 className="text-xs font-black text-slate-900 dark:text-white uppercase tracking-widest">
                         Running Net Balances
                       </h3>
                       <p className="text-[9px] text-slate-500 dark:text-slate-400 font-bold uppercase">
-                        Click row for breakdown (Rohan's drilldown)
+                        Tap row for breakdown
                       </p>
                     </div>
+                    <div className="table-scroll">
 
                     <table className="w-full text-left text-xs text-slate-650">
                       <thead className="bg-slate-100 dark:bg-neutral-900 text-[10px] font-black text-[#111111] dark:text-white uppercase tracking-wider border-b-2 border-black">
@@ -826,6 +827,7 @@ export default function DashboardPage() {
                         ))}
                       </tbody>
                     </table>
+                    </div>
                   </div>
 
                   {chartData.length > 0 && (
@@ -906,7 +908,7 @@ export default function DashboardPage() {
 
               {activeTab === 'expenses' && (
                 <div className="space-y-6">
-                  <div className="neobrutal-card-white p-6 flex flex-col md:flex-row md:items-center justify-between gap-6">
+                  <div className="neobrutal-card-white p-4 sm:p-6 flex flex-col gap-4">
                     <div className="space-y-1">
                       <h3 className="text-xs font-black text-slate-900 dark:text-white uppercase tracking-widest flex items-center gap-1.5">
                         <span className="neobrutal-tag-black">
@@ -920,7 +922,7 @@ export default function DashboardPage() {
                       </p>
                     </div>
 
-                    <form onSubmit={handleCsvImport} className="flex items-center gap-4">
+                    <form onSubmit={handleCsvImport} className="flex flex-col sm:flex-row items-start sm:items-center gap-3">
                       <input
                         type="file"
                         accept=".csv"
@@ -1002,7 +1004,7 @@ export default function DashboardPage() {
                   )}
 
                   <div className="neobrutal-card-white overflow-hidden">
-                    <div className="p-5 border-b-2 border-black flex justify-between items-center bg-white dark:bg-[#1c1c1e]">
+                    <div className="p-4 sm:p-5 border-b-2 border-black flex flex-col sm:flex-row justify-between sm:items-center gap-3 bg-white dark:bg-[#1c1c1e]">
                       <h3 className="text-xs font-black text-slate-900 dark:text-white uppercase tracking-widest">
                         Group Expenses
                       </h3>
