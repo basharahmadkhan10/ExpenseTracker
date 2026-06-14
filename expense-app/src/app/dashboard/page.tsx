@@ -318,6 +318,31 @@ export default function DashboardPage() {
     }
   };
 
+  const handleExportReportCsv = () => {
+    if (!importReport) return;
+    const headers = ['Row Number', 'Expense/Settlement Description', 'Status', 'Anomalies Detected', 'Action Taken / Details'];
+    const csvRows = [
+      headers.join(','),
+      ...importReport.map(rep => {
+        const rowNum = rep.rowNumber;
+        const desc = `"${rep.description.replace(/"/g, '""')}"`;
+        const status = rep.status;
+        const anomalies = `"${rep.anomalies.map((a: any) => a.description).join(' | ').replace(/"/g, '""')}"`;
+        const details = `"${rep.details.replace(/"/g, '""')}"`;
+        return [rowNum, desc, status, anomalies, details].join(',');
+      })
+    ];
+    const csvContent = csvRows.join('\n');
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.setAttribute('href', url);
+    link.setAttribute('download', `Import_Report_${new Date().toISOString().slice(0, 10)}.csv`);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
   const handleManualExpense = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!selectedGroup) return;
@@ -942,17 +967,25 @@ export default function DashboardPage() {
 
                   {importReport && (
                     <div className="neobrutal-card-yellow p-6 space-y-4 text-black">
-                      <div className="flex justify-between items-center">
+                      <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-2 border-b border-black/10 pb-2">
                         <h4 className="text-xs font-black text-slate-900 uppercase tracking-widest flex items-center gap-1.5">
                           <FileText className="h-4.5 w-4.5" />
                           Live CSV Import Report
                         </h4>
-                        <button
-                          onClick={() => setImportReport(null)}
-                          className="text-[10px] text-slate-900 font-bold uppercase hover:text-slate-850 cursor-pointer"
-                        >
-                          Clear Report
-                        </button>
+                        <div className="flex items-center gap-3">
+                          <button
+                            onClick={handleExportReportCsv}
+                            className="text-[9px] bg-black text-[#f5bb1b] font-black uppercase tracking-wider py-1 px-3 border-2 border-black rounded-lg shadow-[2px_2px_0px_#000] cursor-pointer hover:bg-neutral-800"
+                          >
+                            Export to Excel/CSV
+                          </button>
+                          <button
+                            onClick={() => setImportReport(null)}
+                            className="text-[10px] text-slate-900 font-bold uppercase hover:text-slate-855 cursor-pointer"
+                          >
+                            Clear
+                          </button>
+                        </div>
                       </div>
 
                       <div className="max-h-80 overflow-y-auto space-y-2 text-xs">
