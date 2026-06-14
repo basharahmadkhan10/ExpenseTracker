@@ -20,7 +20,6 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'Password must be at least 4 characters' }, { status: 400 });
     }
 
-    
     const existingUser = await prisma.user.findFirst({
       where: {
         name: trimmedName,
