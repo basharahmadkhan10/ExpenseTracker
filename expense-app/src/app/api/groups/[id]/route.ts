@@ -18,7 +18,7 @@ export async function GET(
 
     const { id } = await params;
 
-    // Verify membership
+    
     const membership = await prisma.groupMember.findFirst({
       where: {
         groupId: id,
@@ -79,7 +79,7 @@ export async function DELETE(
 
     const { id } = await params;
 
-    // Verify membership
+    
     const membership = await prisma.groupMember.findFirst({
       where: {
         groupId: id,
@@ -91,7 +91,7 @@ export async function DELETE(
       return NextResponse.json({ error: 'Group not found or access denied' }, { status: 403 });
     }
 
-    // Delete the group (cascade onDelete handles memberships, expenses, settlements, sessions, etc.)
+    
     await prisma.group.delete({
       where: { id },
     });

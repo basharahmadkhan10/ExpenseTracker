@@ -20,7 +20,7 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'Password must be at least 4 characters' }, { status: 400 });
     }
 
-    // Check if user already exists
+    
     const existingUser = await prisma.user.findFirst({
       where: {
         name: trimmedName,
@@ -51,7 +51,7 @@ export async function POST(request: Request) {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
       sameSite: 'strict',
-      maxAge: 7 * 24 * 60 * 60, // 7 days
+      maxAge: 7 * 24 * 60 * 60, 
       path: '/',
     });
 
