@@ -565,10 +565,8 @@ export default function DashboardPage() {
         </div>
       </header>
 
-      
       <main className="max-w-7xl mx-auto px-6 py-8 grid grid-cols-1 lg:grid-cols-4 gap-8">
-        
-        
+
         <section className="lg:col-span-1 space-y-6">
           <div className="neobrutal-card-dark p-6 space-y-4">
             <div className="flex items-center justify-between border-b-2 border-neutral-800 pb-3">
@@ -655,7 +653,6 @@ export default function DashboardPage() {
           )}
         </section>
 
-        
         <section className="lg:col-span-3 space-y-6">
           {selectedGroup ? (
             <>
@@ -683,14 +680,12 @@ export default function DashboardPage() {
                 ))}
               </div>
 
-              
               {error && (
                 <div className="rounded-2xl bg-red-950/40 border-3 border-black px-4 py-3 text-xs font-bold text-red-400 shadow-[2px_2px_0px_#000]">
                   {error}
                 </div>
               )}
 
-              
               {activeTab === 'balances' && balancesData && (
                 <div className="space-y-6">
                   
@@ -727,7 +722,6 @@ export default function DashboardPage() {
                     </div>
                   </div>
 
-                  
                   <div className="neobrutal-card-white overflow-hidden">
                     <div className="p-5 border-b-2 border-black flex justify-between items-center bg-white dark:bg-[#1c1c1e]">
                       <h3 className="text-xs font-black text-slate-900 dark:text-white uppercase tracking-widest">Running Net Balances</h3>
@@ -807,7 +801,6 @@ export default function DashboardPage() {
                 </div>
               )}
 
-              
               {activeTab === 'expenses' && (
                 <div className="space-y-6">
                   
@@ -842,7 +835,6 @@ export default function DashboardPage() {
                     </form>
                   </div>
 
-                  
                   {importReport && (
                     <div className="neobrutal-card-yellow p-6 space-y-4 text-black">
                       <div className="flex justify-between items-center">
@@ -893,7 +885,6 @@ export default function DashboardPage() {
                     </div>
                   )}
 
-                  
                   <div className="neobrutal-card-white overflow-hidden">
                     <div className="p-5 border-b-2 border-black flex justify-between items-center bg-white dark:bg-[#1c1c1e]">
                       <h3 className="text-xs font-black text-slate-900 dark:text-white uppercase tracking-widest">Group Expenses</h3>
@@ -960,7 +951,6 @@ export default function DashboardPage() {
                 </div>
               )}
 
-              
               {activeTab === 'settlements' && (
                 <div className="neobrutal-card-white overflow-hidden">
                   <div className="p-5 border-b-2 border-black flex justify-between items-center bg-white dark:bg-[#1c1c1e]">
@@ -1012,7 +1002,6 @@ export default function DashboardPage() {
                 </div>
               )}
 
-              
               {activeTab === 'anomalies' && (
                 <div className="space-y-6">
                   <div className="neobrutal-card-yellow p-6 space-y-2 text-black">
@@ -1096,7 +1085,6 @@ export default function DashboardPage() {
                 </div>
               )}
 
-              
               {activeTab === 'members' && (
                 <div className="space-y-6">
                   
@@ -1190,7 +1178,6 @@ export default function DashboardPage() {
         </section>
       </main>
 
-      
       {isCreateGroupOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/80 backdrop-blur-sm p-4">
           <div className="w-full max-w-md neobrutal-card-white p-6 space-y-4">
@@ -1228,7 +1215,6 @@ export default function DashboardPage() {
         </div>
       )}
 
-      
       {isAddMemberOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/80 backdrop-blur-sm p-4">
           <div className="w-full max-w-md neobrutal-card-white p-6 space-y-4">
@@ -1278,7 +1264,6 @@ export default function DashboardPage() {
         </div>
       )}
 
-      
       {drilldownUser && drilldownData && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/80 backdrop-blur-sm p-4">
           <div className="w-full max-w-3xl neobrutal-card-white p-6 space-y-6 max-h-[85vh] overflow-y-auto text-black dark:text-white">
@@ -1295,7 +1280,6 @@ export default function DashboardPage() {
               </button>
             </div>
 
-            
             <div className="bg-slate-50 dark:bg-neutral-900 border-2 border-black rounded-2xl p-5 flex justify-between items-center text-center text-xs shadow-[2px_2px_0px_#000] text-black dark:text-white">
               <div>
                 <span className="text-[9px] text-slate-500 dark:text-slate-450 uppercase font-bold block mb-1">Paid</span>
@@ -1325,7 +1309,6 @@ export default function DashboardPage() {
               </div>
             </div>
 
-            
             <div className="space-y-3">
               <h4 className="text-[10px] font-black text-slate-450 uppercase tracking-widest">Owed Splits</h4>
               <div className="max-h-56 overflow-y-auto space-y-2 text-[11px] font-medium text-black dark:text-white">
@@ -1354,7 +1337,6 @@ export default function DashboardPage() {
               </div>
             </div>
 
-            
             <div className="space-y-3">
               <h4 className="text-[10px] font-black text-slate-450 uppercase tracking-widest">Paid Costs</h4>
               <div className="max-h-56 overflow-y-auto space-y-2 text-[11px] font-medium text-black dark:text-white">
@@ -1386,7 +1368,6 @@ export default function DashboardPage() {
         </div>
       )}
 
-      
       {isAddExpenseOpen && selectedGroup && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/80 backdrop-blur-sm p-4">
           <div className="w-full max-w-lg neobrutal-card-white p-6 space-y-4 max-h-[90vh] overflow-y-auto">
@@ -1527,7 +1508,6 @@ export default function DashboardPage() {
         </div>
       )}
 
-      
       {isRecordSettlementOpen && selectedGroup && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/80 backdrop-blur-sm p-4">
           <div className="w-full max-w-md neobrutal-card-white p-6 space-y-4">
@@ -1604,7 +1584,6 @@ export default function DashboardPage() {
         </div>
       )}
 
-      
       {editingAnomaly && selectedGroup && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/80 backdrop-blur-sm p-4">
           <div className="w-full max-w-lg neobrutal-card-white p-6 space-y-4 max-h-[90vh] overflow-y-auto">
@@ -1717,7 +1696,6 @@ export default function DashboardPage() {
         </div>
       )}
 
-      
       {confirmDeleteGroupId && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/80 backdrop-blur-sm p-4">
           <div className="w-full max-w-sm neobrutal-card-white p-6 space-y-5">
