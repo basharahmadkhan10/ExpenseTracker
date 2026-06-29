@@ -2,19 +2,27 @@
 
 import { useEffect, useState } from 'react';
 
-let hasShownThisSession = false;
-
 export default function Preloader({ children }: { children?: React.ReactNode }) {
-  const shouldAnimate = !hasShownThisSession;
-
-  const [loading, setLoading] = useState(shouldAnimate);
-  const [showContent, setShowContent] = useState(!shouldAnimate);
-  const [textVisible, setTextVisible] = useState(shouldAnimate);
+  const [loading, setLoading] = useState(true);
+  const [showContent, setShowContent] = useState(false);
+  const [textVisible, setTextVisible] = useState(true);
+  const [hasChecked, setHasChecked] = useState(false);
 
   useEffect(() => {
-    if (!shouldAnimate) return;
+    const hasShown = sessionStorage.getItem('preloader_shown');
+    
+    if (hasShown) {
+      // Already shown this session, skip animation
+      setLoading(false);
+      setShowContent(true);
+      setTextVisible(false);
+      setHasChecked(true);
+      return;
+    }
 
-    hasShownThisSession = true;
+    // First time this session, run animation
+    sessionStorage.setItem('preloader_shown', 'true');
+    setHasChecked(true);
 
     const textTimer = setTimeout(() => {
       setTextVisible(false);
@@ -29,11 +37,13 @@ export default function Preloader({ children }: { children?: React.ReactNode }) 
       clearTimeout(textTimer);
       clearTimeout(curtainTimer);
     };
-  }, [shouldAnimate]);
+  }, []);
 
-  if (!shouldAnimate) {
+  // While checking sessionStorage (very brief), or if skipping animation
+  // we just render children directly to avoid flashing the curtain
+  if (hasChecked && !loading && showContent && !textVisible) {
     return (
-      <div className="flex-1 flex flex-col">
+      <div className="flex-1 flex flex-col animate-fade-in-up">
         {children}
       </div>
     );
