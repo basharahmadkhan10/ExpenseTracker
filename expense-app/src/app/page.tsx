@@ -260,7 +260,7 @@ export default function LandingPage() {
 
           {/* Right Column: Hero Artwork */}
           <div className="flex justify-center relative">
-            <div className="w-[340px] h-[340px] md:w-[420px] md:h-[420px] rounded-3xl overflow-hidden border-4 border-black shadow-[8px_8px_0px_#000] relative bg-[#262626]">
+            <div className="w-[340px] h-[240px] md:w-[480px] md:h-[320px] rounded-3xl overflow-hidden border-4 border-black shadow-[8px_8px_0px_#000] relative bg-[#262626]">
               <Image
                 src="/hero_artwork.png"
                 alt="Expense Tracker Core Concept Artwork"
