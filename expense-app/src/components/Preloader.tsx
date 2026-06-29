@@ -2,20 +2,6 @@
 
 import { useEffect, useState } from 'react';
 
-/**
- * Determines whether this page load is a "fresh" load (first visit or full
- * browser reload) vs. a client-side (SPA) navigation that Next.js handles
- * internally.
- *
- * Strategy:
- *  - On a full reload the entire React tree mounts from scratch, so the
- *    component's initial render always runs.
- *  - We use a module-level flag (`hasShownThisSession`) that persists across
- *    re-renders but resets on a full page reload (because the JS module is
- *    re-evaluated).  This means:
- *      • First mount after a full reload → show preloader
- *      • Subsequent client-side navigations → skip preloader
- */
 let hasShownThisSession = false;
 
 export default function Preloader({ children }: { children?: React.ReactNode }) {
@@ -28,15 +14,12 @@ export default function Preloader({ children }: { children?: React.ReactNode }) 
   useEffect(() => {
     if (!shouldAnimate) return;
 
-    // Mark as shown so future client-side navigations skip the preloader
     hasShownThisSession = true;
 
-    // Fade text out 300ms before curtains open so they never overlap
     const textTimer = setTimeout(() => {
       setTextVisible(false);
     }, 1100);
 
-    // Then open the curtains
     const curtainTimer = setTimeout(() => {
       setLoading(false);
       setShowContent(true);
@@ -48,7 +31,6 @@ export default function Preloader({ children }: { children?: React.ReactNode }) 
     };
   }, [shouldAnimate]);
 
-  // When the preloader is not animating, render children directly
   if (!shouldAnimate) {
     return (
       <div className="flex-1 flex flex-col">
@@ -60,7 +42,6 @@ export default function Preloader({ children }: { children?: React.ReactNode }) 
   return (
     <>
       <div className="fixed inset-0 z-[9999] pointer-events-none flex">
-        {/* Left Curtain */}
         <div
           className={`w-1/2 h-full bg-[#111111] border-r-2 border-[#f5bb1b] shadow-[4px_0_20px_rgba(245,187,27,0.25)] flex items-center justify-center transition-transform duration-1000 ease-[cubic-bezier(0.77,0,0.175,1)] ${
             loading ? 'translate-x-0' : '-translate-x-full'
@@ -75,7 +56,6 @@ export default function Preloader({ children }: { children?: React.ReactNode }) 
           </span>
         </div>
 
-        {/* Right Curtain */}
         <div
           className={`w-1/2 h-full bg-[#111111] border-l-2 border-[#f5bb1b] shadow-[-4px_0_20px_rgba(245,187,27,0.25)] flex items-center justify-center transition-transform duration-1000 ease-[cubic-bezier(0.77,0,0.175,1)] ${
             loading ? 'translate-x-0' : 'translate-x-full'
@@ -91,7 +71,6 @@ export default function Preloader({ children }: { children?: React.ReactNode }) 
         </div>
       </div>
 
-      {/* Page content fades in once curtains are open */}
       <div
         className={`transition-opacity duration-700 flex-1 flex flex-col ${
           showContent ? 'opacity-100' : 'opacity-0'
@@ -102,4 +81,3 @@ export default function Preloader({ children }: { children?: React.ReactNode }) 
     </>
   );
 }
-
