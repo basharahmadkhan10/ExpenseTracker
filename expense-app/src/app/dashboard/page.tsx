@@ -777,7 +777,7 @@ export default function DashboardPage() {
                     <h3 className="text-xs font-black text-slate-900 dark:text-white uppercase tracking-widest mb-3 flex items-center gap-1.5">
                       <span className="neobrutal-tag-yellow flex items-center gap-1">
                         <CheckCircle className="h-3.5 w-3.5 stroke-[3]" />
-                        Aisha's Debt Minimization
+                        Optimal Debt Minimization
                       </span>
                     </h3>
                     <p className="text-[11px] text-slate-500 dark:text-slate-400 font-semibold mb-4 leading-relaxed">
@@ -795,7 +795,7 @@ export default function DashboardPage() {
                               {tx.from}
                             </span>
                             <span className="text-[9px] text-slate-400 dark:text-slate-500 mx-2 font-bold uppercase">
-                              pays
+                              SHOULD PAY →
                             </span>
                             <span className="font-extrabold text-emerald-500 uppercase tracking-wider">
                               {tx.to}
@@ -2015,7 +2015,7 @@ export default function DashboardPage() {
                       setOverrideForm({ ...overrideForm, split_with: e.target.value })
                     }
                     className="block w-full neobrutal-input text-xs"
-                    placeholder="Aisha;Rohan;Priya"
+                    placeholder="Member1;Member2;Member3"
                   />
                 </div>
                 <div className="col-span-2 space-y-2">
@@ -2029,7 +2029,7 @@ export default function DashboardPage() {
                       setOverrideForm({ ...overrideForm, split_details: e.target.value })
                     }
                     className="block w-full neobrutal-input text-xs"
-                    placeholder="Aisha 30; Rohan 30..."
+                    placeholder="Member1 30; Member2 30..."
                   />
                 </div>
               </div>
