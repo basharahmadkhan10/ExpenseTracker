@@ -92,7 +92,7 @@ export default function LoginPage() {
         {/* Title Tagline */}
         <div className="text-center space-y-4">
           <div className="inline-block bg-white text-black border-2 border-black px-4 py-1.5 font-black text-[10px] uppercase tracking-widest shadow-[2px_2px_0px_#000] rounded-xl">
-            🔐 SECURE PORTAL
+            SECURE PORTAL
           </div>
 
           <div className="space-y-1">
