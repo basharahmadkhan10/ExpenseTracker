@@ -347,14 +347,24 @@ export default function DashboardPage() {
     e.preventDefault();
     if (!selectedGroup) return;
 
-    const formattedSplits: any[] = [];
+    let formattedSplits: any[] = [];
     const members = selectedGroup.members || [];
-    members.forEach((m: any) => {
-      const val = expenseSplitDetails[m.id];
-      if (val) {
-        formattedSplits.push({ userId: m.id, amount: parseFloat(val) });
-      }
-    });
+    
+    if (expenseSplitType === 'EQUAL') {
+      const amt = parseFloat(expenseAmount) || 0;
+      const splitAmt = amt / members.length;
+      formattedSplits = members.map((m: any) => ({
+        userId: m.id,
+        amount: splitAmt
+      }));
+    } else {
+      members.forEach((m: any) => {
+        const val = expenseSplitDetails[m.id];
+        if (val) {
+          formattedSplits.push({ userId: m.id, amount: parseFloat(val) });
+        }
+      });
+    }
 
     try {
       const res = await fetch(`/api/groups/${selectedGroup.id}/expenses`, {
@@ -867,7 +877,7 @@ export default function DashboardPage() {
                       </div>
 
                       <div className="h-72 w-full pt-4">
-                        <ResponsiveContainer width="100%" height="100%">
+                        <ResponsiveContainer width="100%" height="100%" minWidth={0} minHeight={0}>
                           <LineChart
                             data={chartData}
                             margin={{ top: 10, right: 30, left: 10, bottom: 5 }}
