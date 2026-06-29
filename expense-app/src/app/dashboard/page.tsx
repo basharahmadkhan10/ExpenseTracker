@@ -1011,7 +1011,7 @@ export default function DashboardPage() {
                                 <span
                                   className={`text-[9px] font-black uppercase tracking-wider px-2 py-0.5 rounded-full border-2 border-black ${
                                     rep.status === 'INSERTED'
-                                      ? 'bg-slate-150 text-slate-800'
+                                      ? 'bg-slate-200 text-slate-800'
                                       : rep.status === 'SETTLEMENT'
                                         ? 'bg-emerald-100 text-emerald-800'
                                         : 'bg-amber-100 text-amber-800'
@@ -1023,7 +1023,7 @@ export default function DashboardPage() {
                                 {rep.anomalies.map((a: any, aIdx: number) => (
                                   <span
                                     key={aIdx}
-                                    className="text-[9px] text-red-650 font-bold uppercase tracking-wider"
+                                    className="text-[9px] text-red-600 font-bold uppercase tracking-wider"
                                   >
                                     ⚠️ {a.description}
                                   </span>
@@ -1267,7 +1267,7 @@ export default function DashboardPage() {
                                   </button>
                                   <button
                                     onClick={() => handleResolveAnomaly(anom.id, 'REJECT')}
-                                    className="neobrutal-btn-white text-[9px] px-3 py-1.5 shadow-[2px_2px_0px_#000] border-2 border-black text-red-650 hover:text-red-700"
+                                    className="neobrutal-btn-white text-[9px] px-3 py-1.5 shadow-[2px_2px_0px_#000] border-2 border-black text-red-600 hover:text-red-700"
                                   >
                                     Reject
                                   </button>
@@ -1343,7 +1343,7 @@ export default function DashboardPage() {
                               <div className="flex items-center gap-2">
                                 <span className="font-bold text-slate-600 dark:text-slate-400">Status:</span>
                                 {m.leftAt ? (
-                                  <span className="text-red-650 font-bold">
+                                  <span className="text-red-600 font-bold">
                                     Left on{' '}
                                     {new Date(m.leftAt).toLocaleDateString(undefined, {
                                       year: 'numeric',
@@ -1379,7 +1379,7 @@ export default function DashboardPage() {
                                     toast.warning('Please select a departure date first.');
                                   }
                                 }}
-                                className="neobrutal-btn-white text-[9px] px-3 py-1.5 shadow-[2px_2px_0px_#000] border-2 border-black text-red-650 hover:text-red-700"
+                                className="neobrutal-btn-white text-[9px] px-3 py-1.5 shadow-[2px_2px_0px_#000] border-2 border-black text-red-600 hover:text-red-700"
                               >
                                 Record Departure
                               </button>
