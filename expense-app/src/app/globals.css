@@ -47,7 +47,7 @@ body.dark-theme {
   --grid-line-color: rgba(255, 255, 255, 0.03);
   --dots-color: rgba(255, 255, 255, 0.04);
   --header-bg: #101012;
-  --header-text: #f0f0f0;
+  --header-text: #333232;
   --table-head-bg: #191919;
   --table-row-hover: #1c1c1e;
   --accent-red: #fc8181;
