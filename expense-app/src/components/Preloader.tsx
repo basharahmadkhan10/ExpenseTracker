@@ -6,7 +6,8 @@ import { useEffect, useState } from 'react';
 let hasShownThisSession = false;
 
 export default function Preloader({ children }: { children?: React.ReactNode }) {
-  const shouldAnimate = !hasShownThisSession;
+  // Initialize once for the lifetime of this component instance
+  const [shouldAnimate] = useState(!hasShownThisSession);
 
   const [loading, setLoading] = useState(shouldAnimate);
   const [showContent, setShowContent] = useState(!shouldAnimate);
