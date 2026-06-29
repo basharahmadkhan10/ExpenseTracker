@@ -571,11 +571,11 @@ export default function DashboardPage() {
 
   if (loading) {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-[#1b1b1b] text-white">
-        <div className="flex flex-col items-center gap-4">
-          <RefreshCw className="h-10 w-10 animate-spin text-brand-yellow" />
-          <p className="text-xs font-black tracking-widest text-brand-yellow uppercase">
-            LOADING THE SYSTEM...
+      <div className="flex min-h-screen items-center justify-center bg-dots-grid" style={{ backgroundColor: 'var(--bg-page)' }}>
+        <div className="flex flex-col items-center gap-5 neobrutal-card-white p-8 shadow-[4px_4px_0px_#000]">
+          <RefreshCw className="h-10 w-10 animate-spin text-[#f5bb1b]" />
+          <p className="text-xs font-black tracking-widest text-slate-900 dark:text-white uppercase">
+            Loading Data...
           </p>
         </div>
       </div>
