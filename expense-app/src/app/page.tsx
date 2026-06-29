@@ -82,19 +82,19 @@ export default function LandingPage() {
 
   useEffect(() => {
     const saved = localStorage.getItem('theme') as 'light' | 'dark' | null;
-    if (saved) {
-      setTheme(saved);
-      document.body.className = saved === 'dark' ? 'dark-theme' : 'light-theme';
-    } else {
-      setTheme('light');
-      document.body.className = 'light-theme';
-    }
+    const active = saved || 'light';
+    setTheme(active);
+    document.documentElement.classList.remove('dark', 'light');
+    document.documentElement.classList.add(active === 'dark' ? 'dark' : 'light');
+    document.body.className = active === 'dark' ? 'dark-theme' : 'light-theme';
   }, []);
 
   const toggleTheme = () => {
     const next = theme === 'light' ? 'dark' : 'light';
     setTheme(next);
     localStorage.setItem('theme', next);
+    document.documentElement.classList.remove('dark', 'light');
+    document.documentElement.classList.add(next === 'dark' ? 'dark' : 'light');
     document.body.className = next === 'dark' ? 'dark-theme' : 'light-theme';
   };
 
@@ -214,7 +214,7 @@ export default function LandingPage() {
               </h1>
             </div>
 
-            <p className="text-slate-350 text-sm font-medium leading-relaxed max-w-xl">
+            <p className="text-slate-600 dark:text-slate-300 text-sm font-medium leading-relaxed max-w-xl">
               No more messy spreadsheets, conversion confusion, or time-travel membership
               calculations. We construct an elegant, auditable, and completely transparent picture
               of your shared flatmate ledger.
@@ -359,7 +359,7 @@ export default function LandingPage() {
 
             {/* Social Connect */}
             <div className="pt-4 flex items-center gap-4 border-t-2 border-dashed border-slate-300 dark:border-slate-800">
-              <span className="text-[10px] font-bold text-slate-450 uppercase tracking-widest">
+              <span className="text-[10px] font-bold text-slate-600 dark:text-slate-400 uppercase tracking-widest">
                 Connect with our Devs:
               </span>
               <div className="flex gap-2.5">
@@ -391,7 +391,7 @@ export default function LandingPage() {
             <h2 className="text-3xl font-black uppercase tracking-tight inline-block border-3 border-black bg-white text-black px-4 py-2 rounded-2xl shadow-[3px_3px_0px_#000]">
               What We Do
             </h2>
-            <p className="text-[10px] text-slate-550 dark:text-slate-400 font-bold uppercase tracking-wider block pt-2">
+            <p className="text-[10px] text-slate-500 dark:text-slate-400 font-bold uppercase tracking-wider block pt-2">
               Standard operations and financial micro-services
             </p>
           </div>
@@ -428,7 +428,7 @@ export default function LandingPage() {
                     <serv.icon className="w-5 h-5 stroke-[2.5]" />
                   </span>
                   <h3 className="text-xs font-black uppercase tracking-wider mt-5">{serv.title}</h3>
-                  <p className="text-xs font-medium text-slate-550 dark:text-slate-350 mt-3 leading-relaxed">
+                  <p className="text-xs font-medium text-slate-500 dark:text-slate-600 dark:text-slate-300 mt-3 leading-relaxed">
                     {serv.desc}
                   </p>
                 </div>
@@ -468,7 +468,7 @@ export default function LandingPage() {
             <h2 className="text-3xl font-black uppercase tracking-tight inline-block border-3 border-black bg-[#f5bb1b] text-black px-4 py-2 rounded-2xl shadow-[3px_3px_0px_#000]">
               Audited Activity Logs
             </h2>
-            <p className="text-[10px] text-slate-550 dark:text-slate-400 font-bold uppercase tracking-wider block pt-2">
+            <p className="text-[10px] text-slate-500 dark:text-slate-400 font-bold uppercase tracking-wider block pt-2">
               Live sample of tracked transactions & membership milestones
             </p>
           </div>
@@ -590,7 +590,7 @@ export default function LandingPage() {
                     <item.icon className="w-4 h-4 stroke-[2.5]" />
                   </span>
                   <div>
-                    <h4 className="text-[9px] font-black text-slate-450 uppercase tracking-widest">
+                    <h4 className="text-[9px] font-black text-slate-600 dark:text-slate-400 uppercase tracking-widest">
                       {item.title}
                     </h4>
                     <p className="text-xs font-black uppercase tracking-wide mt-0.5">{item.val}</p>

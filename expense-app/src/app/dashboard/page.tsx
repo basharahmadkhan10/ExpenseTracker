@@ -670,7 +670,7 @@ export default function DashboardPage() {
               ))}
 
               {groups.length === 0 && (
-                <p className="text-[10px] text-slate-550 text-center py-4 uppercase font-bold tracking-wider">
+                <p className="text-[10px] text-slate-500 text-center py-4 uppercase font-bold tracking-wider">
                   No groups found
                 </p>
               )}
@@ -798,7 +798,7 @@ export default function DashboardPage() {
                       ))}
 
                       {balancesData.reconciliation.length === 0 && (
-                        <p className="text-xs text-slate-550 dark:text-slate-450 py-2 font-bold tracking-wider col-span-2">
+                        <p className="text-xs text-slate-500 dark:text-slate-600 dark:text-slate-400 py-2 font-bold tracking-wider col-span-2">
                           All debts settled! Ledger balanced.
                         </p>
                       )}
@@ -816,7 +816,7 @@ export default function DashboardPage() {
                     </div>
                     <div className="table-scroll">
 
-                    <table className="w-full text-left text-xs text-slate-650">
+                    <table className="w-full text-left text-xs text-slate-600">
                       <thead className="bg-slate-100 dark:bg-neutral-900 text-[10px] font-black text-[#111111] dark:text-white uppercase tracking-wider border-b-2 border-black">
                         <tr>
                           <th className="px-6 py-4">Member Name</th>
@@ -861,7 +861,7 @@ export default function DashboardPage() {
                         <h3 className="text-xs font-black text-slate-900 dark:text-white uppercase tracking-widest">
                           Balance Timeline View
                         </h3>
-                        <p className="text-[10.5px] text-slate-550 dark:text-slate-400 font-medium leading-relaxed">
+                        <p className="text-[10.5px] text-slate-500 dark:text-slate-400 font-medium leading-relaxed">
                           Tracks running balances over time, highlighting join/departure milestones.
                         </p>
                       </div>
@@ -941,7 +941,7 @@ export default function DashboardPage() {
                           Import Spreadsheet CSV
                         </span>
                       </h3>
-                      <p className="text-[10.5px] text-slate-550 dark:text-slate-400 font-medium">
+                      <p className="text-[10.5px] text-slate-500 dark:text-slate-400 font-medium">
                         Upload Expenses Export.csv directly. Clean items are saved; anomalies are
                         reviewed.
                       </p>
@@ -1001,7 +1001,7 @@ export default function DashboardPage() {
                               <span className="font-extrabold text-slate-900 uppercase tracking-wide">
                                 {rep.description}
                               </span>
-                              <p className="text-[9px] text-slate-550 font-semibold uppercase mt-1 leading-relaxed">
+                              <p className="text-[9px] text-slate-500 font-semibold uppercase mt-1 leading-relaxed">
                                 {rep.details}
                               </p>
                             </div>
@@ -1056,7 +1056,7 @@ export default function DashboardPage() {
                     </div>
 
                     <table className="w-full text-left text-xs text-slate-600 dark:text-slate-300">
-                      <thead className="bg-slate-100 dark:bg-neutral-900 text-[10px] font-black text-slate-700 dark:text-slate-350 uppercase tracking-wider border-b-2 border-black">
+                      <thead className="bg-slate-100 dark:bg-neutral-900 text-[10px] font-black text-slate-700 dark:text-slate-600 dark:text-slate-300 uppercase tracking-wider border-b-2 border-black">
                         <tr>
                           <th className="px-6 py-4">Date</th>
                           <th className="px-6 py-4">Description</th>
@@ -1147,7 +1147,7 @@ export default function DashboardPage() {
                   </div>
 
                   <table className="w-full text-left text-xs text-slate-600 dark:text-slate-300">
-                    <thead className="bg-slate-100 dark:bg-neutral-900 text-[10px] font-black text-slate-700 dark:text-slate-350 uppercase tracking-wider border-b-2 border-black">
+                    <thead className="bg-slate-100 dark:bg-neutral-900 text-[10px] font-black text-slate-700 dark:text-slate-600 dark:text-slate-300 uppercase tracking-wider border-b-2 border-black">
                       <tr>
                         <th className="px-6 py-4">Date</th>
                         <th className="px-6 py-4">Payer (Who Paid)</th>
@@ -1212,7 +1212,7 @@ export default function DashboardPage() {
 
                   <div className="neobrutal-card-white overflow-hidden">
                     <table className="w-full text-left text-xs text-slate-600 dark:text-slate-300">
-                      <thead className="bg-slate-100 dark:bg-neutral-900 text-[10px] font-black text-slate-750 dark:text-slate-350 uppercase tracking-wider border-b-2 border-black">
+                      <thead className="bg-slate-100 dark:bg-neutral-900 text-[10px] font-black text-slate-700 dark:text-slate-600 dark:text-slate-300 uppercase tracking-wider border-b-2 border-black">
                         <tr>
                           <th className="px-6 py-4">File / Row</th>
                           <th className="px-6 py-4">Anomaly Type</th>
@@ -1273,7 +1273,7 @@ export default function DashboardPage() {
                                   </button>
                                 </>
                               ) : (
-                                <span className="text-slate-450 italic font-bold uppercase">
+                                <span className="text-slate-600 dark:text-slate-400 italic font-bold uppercase">
                                   Resolved
                                 </span>
                               )}
@@ -1331,7 +1331,7 @@ export default function DashboardPage() {
 
                             <div className="space-y-1 text-[9.5px] text-slate-500 font-semibold uppercase">
                               <div className="flex items-center gap-2">
-                                <span className="font-bold text-slate-450">Joined:</span>
+                                <span className="font-bold text-slate-600 dark:text-slate-400">Joined:</span>
                                 <span>
                                   {new Date(m.joinedAt).toLocaleDateString(undefined, {
                                     year: 'numeric',
@@ -1341,7 +1341,7 @@ export default function DashboardPage() {
                                 </span>
                               </div>
                               <div className="flex items-center gap-2">
-                                <span className="font-bold text-slate-450">Status:</span>
+                                <span className="font-bold text-slate-600 dark:text-slate-400">Status:</span>
                                 {m.leftAt ? (
                                   <span className="text-red-650 font-bold">
                                     Left on{' '}
@@ -1530,7 +1530,7 @@ export default function DashboardPage() {
 
             <div className="bg-slate-50 dark:bg-neutral-900 border-2 border-black rounded-2xl p-5 flex justify-between items-center text-center text-xs shadow-[2px_2px_0px_#000] text-black dark:text-white">
               <div>
-                <span className="text-[9px] text-slate-500 dark:text-slate-450 uppercase font-bold block mb-1">
+                <span className="text-[9px] text-slate-500 dark:text-slate-600 dark:text-slate-400 uppercase font-bold block mb-1">
                   Paid
                 </span>
                 <span className="font-extrabold">
@@ -1578,7 +1578,7 @@ export default function DashboardPage() {
             </div>
 
             <div className="space-y-3">
-              <h4 className="text-[10px] font-black text-slate-450 uppercase tracking-widest">
+              <h4 className="text-[10px] font-black text-slate-600 dark:text-slate-400 uppercase tracking-widest">
                 Owed Splits
               </h4>
               <div className="max-h-56 overflow-y-auto space-y-2 text-[11px] font-medium text-black dark:text-white">
@@ -1613,7 +1613,7 @@ export default function DashboardPage() {
             </div>
 
             <div className="space-y-3">
-              <h4 className="text-[10px] font-black text-slate-450 uppercase tracking-widest">
+              <h4 className="text-[10px] font-black text-slate-600 dark:text-slate-400 uppercase tracking-widest">
                 Paid Costs
               </h4>
               <div className="max-h-56 overflow-y-auto space-y-2 text-[11px] font-medium text-black dark:text-white">
@@ -1769,13 +1769,13 @@ export default function DashboardPage() {
 
               {expenseSplitType === 'UNEQUAL' && (
                 <div className="bg-slate-50 dark:bg-neutral-900 p-4 rounded-xl border-2 border-black space-y-3 text-xs shadow-[2px_2px_0px_#000]">
-                  <h4 className="text-[9px] font-bold text-slate-550 dark:text-slate-400 uppercase tracking-widest">
+                  <h4 className="text-[9px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-widest">
                     Splits share breakdown (₹ in INR)
                   </h4>
                   <div className="grid grid-cols-2 gap-3">
                     {groupMembers.map((m: any) => (
                       <div key={m.id} className="flex items-center justify-between gap-2">
-                        <span className="text-slate-650 dark:text-slate-350 font-bold uppercase tracking-wider text-[9px]">
+                        <span className="text-slate-600 dark:text-slate-600 dark:text-slate-300 font-bold uppercase tracking-wider text-[9px]">
                           {m.name}
                         </span>
                         <input
