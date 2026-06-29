@@ -1,18 +1,35 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { usePathname } from 'next/navigation';
+
+/**
+ * Determines whether this page load is a "fresh" load (first visit or full
+ * browser reload) vs. a client-side (SPA) navigation that Next.js handles
+ * internally.
+ *
+ * Strategy:
+ *  - On a full reload the entire React tree mounts from scratch, so the
+ *    component's initial render always runs.
+ *  - We use a module-level flag (`hasShownThisSession`) that persists across
+ *    re-renders but resets on a full page reload (because the JS module is
+ *    re-evaluated).  This means:
+ *      • First mount after a full reload → show preloader
+ *      • Subsequent client-side navigations → skip preloader
+ */
+let hasShownThisSession = false;
 
 export default function Preloader({ children }: { children?: React.ReactNode }) {
-  const [loading, setLoading] = useState(true);
-  const [showContent, setShowContent] = useState(false);
-  const [textVisible, setTextVisible] = useState(true);
-  const pathname = usePathname();
+  const shouldAnimate = !hasShownThisSession;
+
+  const [loading, setLoading] = useState(shouldAnimate);
+  const [showContent, setShowContent] = useState(!shouldAnimate);
+  const [textVisible, setTextVisible] = useState(shouldAnimate);
 
   useEffect(() => {
-    setLoading(true);
-    setShowContent(false);
-    setTextVisible(true);
+    if (!shouldAnimate) return;
+
+    // Mark as shown so future client-side navigations skip the preloader
+    hasShownThisSession = true;
 
     // Fade text out 300ms before curtains open so they never overlap
     const textTimer = setTimeout(() => {
@@ -29,7 +46,16 @@ export default function Preloader({ children }: { children?: React.ReactNode }) 
       clearTimeout(textTimer);
       clearTimeout(curtainTimer);
     };
-  }, [pathname]);
+  }, [shouldAnimate]);
+
+  // When the preloader is not animating, render children directly
+  if (!shouldAnimate) {
+    return (
+      <div className="flex-1 flex flex-col">
+        {children}
+      </div>
+    );
+  }
 
   return (
     <>
@@ -76,3 +102,4 @@ export default function Preloader({ children }: { children?: React.ReactNode }) 
     </>
   );
 }
+
