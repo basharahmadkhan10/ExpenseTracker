@@ -1,3 +1,4 @@
+
 @import "tailwindcss";
 
 @theme {
@@ -247,7 +248,7 @@ html.light .text-slate-300 { color: #666666 !important; }
 
 .neobrutal-btn-white {
   background-color: var(--bg-card) !important;
-  color: var(--text-color) !important;
+  color: var(--accent-green) !important;
   border: 3px solid var(--border-color) !important;
   box-shadow: 4px 4px 0px 0px var(--shadow-color) !important;
   border-radius: 0.75rem !important;
